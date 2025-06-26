@@ -1,0 +1,66 @@
+[
+    {
+        "menu": [
+            {
+                "name": "Dashboard",
+                "icon": "menu-icon tf-icons bx bx-home",
+                "slug": "resident-dashboard",
+                "url": "resident/dashboard"
+            },
+            {
+                "menuHeader": "Account"
+            },
+            {
+                "url": "/profile",
+                "name": "Profile",
+                "icon": "menu-icon tf-icons bx bx-user",
+                "slug": "resident-profile",
+                "role": "resident"
+            },
+            {
+                "menuHeader": "Report Issue"
+            },
+            {
+                "url": "resident/report-history",
+                "name": "My Reports",
+                "icon": "menu-icon tf-icons bx bx-notepad",
+                "slug": "resident-report-history"
+            },
+            {
+                "menuHeader": "Catering"
+            },
+            {
+              "name": "Menu",
+              "icon": "menu-icon tf-icons bx bx-dish",
+              "slug": "catering-daily-menu",
+              "url": "resident/daily_menu"
+            },
+            {
+              "name": "Catering Issue",
+              "icon": "menu-icon tf-icons bx bx-message-alt-error",
+              "slug": "feedback",
+              "submenu": [
+                {
+                  "url": "resident/feedback_form",
+                  "name": "Feedback Form",
+                  "slug": "catering-feedback-form"
+                },
+                {
+                  "url": "resident/feedback_menu",
+                  "name": "Feedback History",
+                  "slug": "catering-feedback-history"
+                }
+              ]
+            },
+            {
+                "menuHeader": "Student"
+            },
+            {
+                "url": "resident/StudentPoint",
+                "name": "Student Point",
+                "icon": "menu-icon tf-icons bx bx-star",
+                "slug": "student-point"
+            }
+        ]
+    }
+]

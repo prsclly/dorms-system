@@ -1,0 +1,99 @@
+{
+  "menu": [
+    {
+      "url": "/dashboard",
+      "name": "Dashboards",
+      "icon": "menu-icon tf-icons bx bx-home",
+      "slug": "admin.dashboard"
+    },
+    {
+      "menuHeader": "Account"
+    },
+    {
+      "name": "Account Settings",
+      "icon": "menu-icon tf-icons bx bx bx-dock-top",
+      "slug": "pages-account-settings",
+      "submenu": [
+        {
+          "url": "admin/manage-residents",
+          "name": "Manage Residents",
+          "slug": "admin.manage.residents"
+        }
+      ]
+    },
+    {
+      "menuHeader": "Report Issue"
+    },
+    {
+      "url": "admin/reports",
+      "name": "All Reports",
+      "icon": "menu-icon tf-icons bx bx-detail",
+      "slug": "tables-basic"
+    },
+    {
+      "url": "admin/feedback-reports",
+      "name": "Feedback",
+      "icon": "menu-icon tf-icons bx bx-support",
+      "slug": "tables-feedback-reports"
+    },
+    {
+      "menuHeader": "Catering"
+    },
+    {
+      "url": "admin/catering/menu",
+      "icon": "menu-icon tf-icons bx bx-dish",
+      "name": "Menu",
+      "slug": "menu_list"
+    },
+    {
+      "name": "Catering Issue",
+      "icon": "menu-icon tf-icons bx bx-message-alt-error",
+      "slug": "feedback",
+      "submenu": [
+        {
+          "url": "admin/catering/dashboard",
+          "name": "Dashboard",
+          "slug": "feedback-dashboard"
+        },
+        {
+          "url": "admin/catering/issue_log",
+          "name": "Issue Log",
+          "slug": "feedback-list"
+        }
+      ]
+    },
+    {
+      "url": "admin/database/pic",
+      "name": "PIC Database",
+      "icon": "menu-icon tf-icons bx bx-user-pin",
+      "slug": "manage-pic"
+    },
+    {
+      "menuHeader": "Point Tracker"
+    },
+    {
+      "name": "Student Point",
+      "icon": "menu-icon tf-icons bx bx-collection",
+      "slug": "cards-basic",
+      "url": "admin/point_tracker/student_point"
+    },
+    {
+      "menuHeader": "Technician",
+      "role": "technician"
+    },
+    {
+      "url": "/technician/tasks",
+      "name": "Task List",
+      "icon": "menu-icon tf-icons bx bx-task",
+      "slug": "technician-tasks",
+      "role": "technician"
+    },
+    {
+      "url": "/task-history",
+      "name": "Task History",
+      "icon": "menu-icon tf-icons bx bx-history",
+      "slug": "technician-history",
+      "role": "technician"
+    }
+  ]
+}
