@@ -43,6 +43,7 @@
         <label for="date" class="form-label">Date</label>
         <input type="date" name="date" class="form-control form-control-sm" value="{{ request('date') }}">
       </div>
+
       <div class="col-md-2">
         <label for="meal_time" class="form-label">Meal Time</label>
         <select name="meal_time" class="form-select form-select-sm">
@@ -52,35 +53,56 @@
           @endforeach
         </select>
       </div>
+
       <div class="col-md-2">
         <label for="pic_id" class="form-label">PIC</label>
         <select name="pic_id" class="form-select form-select-sm">
           <option value="">All</option>
           @foreach ($allPics as $pic)
-            <option value="{{ $pic->id }}" {{ request('pic_id') == $pic->id ? 'selected' : '' }}>
-              {{ $pic->name }}
-            </option>
+            <option value="{{ $pic->id }}" {{ request('pic_id') == $pic->id ? 'selected' : '' }}>{{ $pic->name }}</option>
           @endforeach
         </select>
       </div>
+
       <div class="col-md-2">
         <label for="category" class="form-label">Category</label>
-        <select name="category" class="form-select form-select-sm">
-          <option value="">All</option>
-          @foreach (['Taste', 'Hygiene', 'Food Quality', 'Others'] as $cat)
-            <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
-          @endforeach
-        </select>
+        <div class="d-flex">
+          <select name="category" class="form-select form-select-sm me-1">
+            <option value="">All</option>
+            @foreach (['Taste', 'Hygiene', 'Food Quality', 'Others'] as $cat)
+              <option value="{{ $cat }}" {{ request('category') == $cat ? 'selected' : '' }}>{{ $cat }}</option>
+            @endforeach
+          </select>
+          <!-- Filter & Reset di sini -->
+          <button type="submit" class="btn btn-sm btn-icon btn-primary me-1" title="Apply Filter">
+            <i class="bx bx-filter-alt"></i>
+          </button>
+          <a href="{{ route('feedback-list') }}" class="btn btn-sm btn-icon btn-outline-secondary" title="Reset Filter">
+            <i class="bx bx-reset"></i>
+          </a>
+        </div>
       </div>
+
+      <!-- Download tetap di paling kanan -->
       <div class="col-md-4 text-end">
-        <button type="submit" class="btn btn-sm btn-primary me-1">Filter</button>
-        <a href="{{ route('feedback-list') }}" class="btn btn-sm btn-outline-secondary">Reset</a>
-        <a href="{{ route('feedback-list', array_merge(request()->query(), ['export' => true])) }}" class="btn btn-success btn-sm">
-          Export to Excel
+       <!-- Tombol Export dengan Dropdown -->
+<div class="btn-group">
+  <button type="button" class="btn btn-sm btn-outline-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="Export Options">
+    <i class="bx bx-download"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li>
+      <a class="dropdown-item" href="{{ route('feedback-list', ['export' => 'all']) }}">
+        <i class="bx bx-download me-1"></i> Export All Data
       </a>
-
-
-
+    </li>
+    <li>
+      <a class="dropdown-item" href="{{ route('feedback-list', array_merge(request()->query(), ['export' => 'filtered'])) }}">
+        <i class="bx bx-filter-alt me-1"></i> Export Filtered Data Only
+      </a>
+    </li>
+  </ul>
+</div>
 
       </div>
     </div>

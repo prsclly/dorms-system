@@ -65,7 +65,7 @@
     {
       "url": "admin/database/pic",
       "name": "PIC Database",
-      "icon": "menu-icon tf-icons bx bx-user-pin",
+      "icon": "menu-icon tf-icons bx bx-user-check",
       "slug": "manage-pic"
     },
     {

@@ -8,6 +8,9 @@ use App\Models\PointLog;
 
 class Student extends Model
 {
+
+  public $timestamps = false;
+
     protected $fillable = [
         'nim',
         'name',
