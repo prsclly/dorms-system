@@ -47,7 +47,7 @@ $navbarDetached = ($navbarDetached ?? '');
           <!-- User -->
           <a class="nav-link dropdown-toggle hide-arrow d-flex align-items-center" href="javascript:void(0);" data-bs-toggle="dropdown">
   <div class="avatar avatar-online position-relative" style="width: 40px; height: 40px;">
-    <img src="{{ asset('assets/img/avatars/1.png') }}" alt class="rounded-circle w-100 h-100" style="object-fit: cover;">
+    <img src="{{ asset('assets/img/avatars/2.png') }}" alt class="rounded-circle w-100 h-100" style="object-fit: cover;">
   </div>
 </a>
 
@@ -57,7 +57,7 @@ $navbarDetached = ($navbarDetached ?? '');
                   <div class="d-flex">
                     <div class="flex-shrink-0 me-3">
                       <div class="avatar avatar-online">
-                        <img src="{{ asset('assets/img/avatars/1.png') }}" alt class="w-px-40 h-auto rounded-circle">
+                        <img src="{{ asset('assets/img/avatars/2.png') }}" alt class="w-px-40 h-auto rounded-circle">
                       </div>
                     </div>
                     <div class="flex-grow-1">

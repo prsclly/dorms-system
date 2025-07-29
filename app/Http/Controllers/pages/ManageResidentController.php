@@ -36,7 +36,7 @@ class ManageResidentController extends Controller
             'nim' => 'required|string|unique:students,nim',
         ]);
 
-        $randomPassword = Str::random(8); 
+        $randomPassword = Str::random(8);
 
         $resident = Resident::create([
             'name' => $request->name,

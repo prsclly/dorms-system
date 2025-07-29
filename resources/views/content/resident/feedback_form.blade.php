@@ -72,18 +72,23 @@
           </select>
         </div>
 
-        <!-- Description -->
-        <div class="mb-3">
-          <label for="description" class="form-label">Description</label>
-          <textarea
-            name="description"
-            id="description"
-            class="form-control"
-            rows="2"
-            placeholder="Write your problem here..."
-            required
-          >{{ old('description') }}</textarea>
-        </div>
+<!-- Description -->
+<div class="mb-3">
+  <label for="description" class="form-label">Description</label>
+  <textarea
+    name="description"
+    id="description"
+    class="form-control"
+    rows="2"
+    placeholder="Write your problem here..."
+    required
+    minlength="25"
+    maxlength="150"
+  >{{ old('description') }}</textarea>
+  <small class="text-muted">*Must be 25–150 characters.</small>
+  <small id="charCount" class="form-text text-muted">0 / 150 characters</small>
+</div>
+
 
         <!-- Submit Button -->
         <div class="text-end">
@@ -110,5 +115,31 @@
     }, 3000); // 3 detik
   });
 </script>
+
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const textarea = document.getElementById('description');
+    const counter = document.getElementById('charCount');
+
+    const updateCount = () => {
+      const length = textarea.value.length;
+      counter.textContent = `${length} / 150 characters`;
+    };
+
+    textarea.addEventListener('input', updateCount);
+    updateCount(); // initial count
+
+    // Optional: auto-hide alert
+    setTimeout(() => {
+      document.querySelectorAll('.alert').forEach(alert => {
+        alert.classList.remove('show');
+        alert.classList.add('fade');
+        setTimeout(() => alert.remove(), 500);
+      });
+    }, 3000);
+  });
+</script>
+
 @endsection
 

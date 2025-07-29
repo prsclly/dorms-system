@@ -1,15 +1,35 @@
+
 @extends('layouts/contentNavbarLayout')
 
 @section('title', 'All Reports')
 
+
 @section('content')
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="nav-align-top">
+      <ul class="nav nav-pills flex-column flex-md-row mb-6">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url('report/dashboard') }}">
+            <i class="bx bx-dock-top bx-sm me-2"></i>Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="javascript:void(0);">
+            <i class="bx bx-list-ul bx-sm me-1_5"></i>Report Log
+          </a>
+        </li>
+      </ul>
+    </div>
+
 <!-- All Reports Table -->
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
     <h5 class="mb-0">All Reports</h5>
     <form method="GET" action="{{ route('tables-basic') }}" class="d-flex gap-2">
       <input type="date" name="date" class="form-control form-control-sm" value="{{ request('date') }}">
-      
+
       <select name="category" class="form-select form-select-sm">
         <option value="">All Categories</option>
         @foreach($categories as $cat)

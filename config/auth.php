@@ -52,6 +52,10 @@ return [
       'driver' => 'session',
       'provider' => 'residents',
     ],
+        'parent' => [
+        'driver' => 'session',
+        'provider' => 'parents',
+    ]
   ],
 
   /*
@@ -87,6 +91,10 @@ return [
     'residents' => [
       'driver' => 'eloquent',
       'model' => App\Models\Resident::class,
+    ],
+        'parents' => [
+      'driver' => 'eloquent',
+      'model' => App\Models\Parents::class,
     ],
 
     // 'users' => [
@@ -135,7 +143,7 @@ return [
     ],
     'residents' => [
       'provider' => 'residents',
-      'table' => 'password_reset_tokens', 
+      'table' => 'password_reset_tokens',
       'expire' => 60,
       'throttle' => 60,
     ],

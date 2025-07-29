@@ -19,23 +19,51 @@
           "name": "Manage Residents",
           "slug": "admin.manage.residents"
         }
+        ,
+                {
+          "url": "admin/manage-parents",
+          "name": "Manage Parents",
+          "slug": "admin.manage.parents"
+        },
+        {
+          "url": "admin/manage-admins",
+          "name": "Manage Admins",
+          "slug": "admin.manage.admins"
+        },
+        {
+          "url": "admin/manage-technicians",
+          "name": "Manage Technicians",
+          "slug": "admin.manage.technicians"
+        }
+
       ]
     },
     {
-      "menuHeader": "Report Issue"
-    },
-    {
-      "url": "admin/reports",
-      "name": "All Reports",
-      "icon": "menu-icon tf-icons bx bx-detail",
-      "slug": "tables-basic"
-    },
-    {
-      "url": "admin/feedback-reports",
-      "name": "Feedback",
-      "icon": "menu-icon tf-icons bx bx-support",
-      "slug": "tables-feedback-reports"
-    },
+          "menuHeader": "Report Issue"
+        },
+        {
+          "name": "All Reports",
+          "icon": "menu-icon tf-icons bx bx-detail",
+          "slug": "tables-basic",
+          "submenu": [
+            {
+              "url": "report/dashboard",
+              "name": "Dashboard",
+              "slug": "report.dashboard"
+            },
+            {
+              "url": "admin/reports",
+              "name": "Report Log",
+              "slug": "tables-basic"
+            }
+          ]
+        },
+        {
+          "url": "admin/feedback-reports",
+          "name": "Feedback",
+          "icon": "menu-icon tf-icons bx bx-support",
+          "slug": "tables-feedback-reports"
+        },
     {
       "menuHeader": "Catering"
     },
@@ -76,6 +104,15 @@
       "icon": "menu-icon tf-icons bx bx-collection",
       "slug": "cards-basic",
       "url": "admin/point_tracker/student_point"
+    },
+    {
+    "menuHeader": "Leave Requests"
+    },
+    {
+      "url": "admin/permissions",
+      "name": "Leave Approval",
+      "icon": "menu-icon tf-icons bx bx-check-circle",
+      "slug": "admin.permissions"
     },
     {
       "menuHeader": "Technician",

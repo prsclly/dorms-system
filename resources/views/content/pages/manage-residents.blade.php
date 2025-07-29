@@ -25,12 +25,12 @@
 
     <div class="d-flex gap-2 align-items-center">
       <form method="GET" action="{{ route('admin.manage.residents') }}" class="d-flex gap-2 align-items-center mb-0">
-        <input 
-          type="text" 
-          name="search" 
-          class="form-control form-control-sm" 
-          placeholder="Search by name..." 
-          value="{{ request('search') }}" 
+        <input
+          type="text"
+          name="search"
+          class="form-control form-control-sm"
+          placeholder="Search by name..."
+          value="{{ request('search') }}"
           style="min-width: 200px;">
         <button type="submit" class="btn btn-sm btn-primary">Filter</button>
       </form>
@@ -40,7 +40,7 @@
       </button>
     </div>
   </div>
-  
+
 
   <div class="table-responsive text-nowrap">
     <table class="table text-center">

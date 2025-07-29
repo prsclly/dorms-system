@@ -1,0 +1,52 @@
+[
+  {
+    "menu": [
+      {
+        "name": "Dashboard",
+        "icon": "menu-icon tf-icons bx bx-home",
+        "slug": "parent-dashboard",
+        "url": "parent/dashboard"
+      },
+      {
+        "menuHeader": "Account"
+      },
+      {
+        "url": "/parent/profile",
+        "name": "Profile",
+        "icon": "menu-icon tf-icons bx bx-user",
+        "slug": "parent-profile",
+        "role": "parent"
+      },
+      {
+        "url": "/parent/point-logs",
+        "name": "Point History",
+        "icon": "menu-icon tf-icons bx bx-history",
+        "slug": "parent-point-logs"
+      },
+      {
+        "menuHeader": "Leave Request"
+      },
+      {
+        "url": "/parent/permissions/create",
+        "name": "Leave Request",
+        "icon": "menu-icon tf-icons bx bx-envelope",
+        "slug": "parent-permissions"
+      },
+      {
+        "url": "/parent/permissions/history",
+        "name": "Leave History",
+        "icon": "menu-icon tf-icons bx bx-list-ul",
+        "slug": "parent-permissions-history"
+      },
+      {
+        "menuHeader": "Meal Management"
+      },
+      {
+        "url": "/parent/weekly-menu",
+        "name": "Weekly Menu",
+        "icon": "menu-icon tf-icons bx bx-restaurant",
+        "slug": "parent-weekly-menu"
+      }
+    ]
+  }
+]

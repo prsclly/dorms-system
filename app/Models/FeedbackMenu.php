@@ -17,6 +17,7 @@ class FeedbackMenu extends Model
         'message',
         'resident_id',
         'meal_id',
+        'is_edited'
     ];
 
     // Relasi ke resident

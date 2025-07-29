@@ -141,7 +141,10 @@
                 {{ $feedback->category }}
               </span>
             </td>
-            <td>{{ $feedback->message }}</td>
+            <td style="max-width: 200px; white-space: normal; word-wrap: break-word;">
+              {{ $feedback->message }}
+            </td>
+
             <td>{{ \Carbon\Carbon::parse($feedback->created_at)->format('H:i') }} WIB</td>
           </tr>
         @empty
