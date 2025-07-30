@@ -28,7 +28,7 @@ class PermissionApprovalController extends Controller
 
         $permissions = $query->latest()->get();
 
-        return view('content.admin.permissions.index', compact('permissions'));
+        return view('content.admin.index', compact('permissions'));
     }
 
     /**
@@ -36,7 +36,7 @@ class PermissionApprovalController extends Controller
      */
     public function show(Permission $permission)
     {
-        return view('content.admin.permissions.show', compact('permission'));
+        return view('content.admin.show', compact('permission'));
     }
 
     /**
@@ -76,7 +76,7 @@ class PermissionApprovalController extends Controller
      */
     public function downloadPDF(Permission $permission)
     {
-        $pdf = Pdf::loadView('content.admin.permissions.pdf', compact('permission'));
+        $pdf = Pdf::loadView('content.admin.pdf', compact('permission'));
 
         $studentName = str_replace(' ', '_', strtolower($permission->student->name));
         $filename = 'leave_permission_' . $studentName . '_' . $permission->student->nim . '.pdf';

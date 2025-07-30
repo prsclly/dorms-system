@@ -60,6 +60,15 @@
                 "name": "Student Point",
                 "icon": "menu-icon tf-icons bx bx-star",
                 "slug": "student-point"
+            },
+            {
+           "menuHeader": "Leave Request"
+            },
+            {
+              "url": "resident/leave-history",
+              "name": "Request History",
+              "icon": "menu-icon tf-icons bx bx-history",
+              "slug": "resident.permissions.history"
             }
         ]
     }

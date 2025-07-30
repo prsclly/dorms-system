@@ -1,4 +1,4 @@
-@extends('layouts/contentParentLayout')
+@extends('layouts/contentParentsLayout')
 
 @section('title', 'Leave Request History')
 

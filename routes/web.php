@@ -118,11 +118,11 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('admin/database/pic/update/{id}', [PicController::class, 'update'])->name('pic.update');
     Route::delete('admin/database/pic/delete/{id}', [PicController::class, 'destroy'])->name('pic.destroy');
 
-     Route::get('/permissions', [PermissionApprovalController::class, 'index'])->name('admin.permissions.index');
-    Route::get('/permissions/{permission}', [PermissionApprovalController::class, 'show'])->name('admin.permissions.show');
-    Route::post('/permissions/{permission}/approve', [PermissionApprovalController::class, 'approve'])->name('admin.permissions.approve');
-    Route::post('/permissions/{permission}/reject', [PermissionApprovalController::class, 'reject'])->name('admin.permissions.reject');
-    Route::get('/permissions/{permission}/download', [PermissionApprovalController::class, 'downloadPDF'])->name('admin.permissions.download');
+     Route::get('admin/permissions', [PermissionApprovalController::class, 'index'])->name('admin.permissions.index');
+    Route::get('admin/permissions/{permission}', [PermissionApprovalController::class, 'show'])->name('admin.permissions.show');
+    Route::post('admin/permissions/{permission}/approve', [PermissionApprovalController::class, 'approve'])->name('admin.permissions.approve');
+    Route::post('admin/permissions/{permission}/reject', [PermissionApprovalController::class, 'reject'])->name('admin.permissions.reject');
+    Route::get('admin/permissions/{permission}/download', [PermissionApprovalController::class, 'downloadPDF'])->name('admin.permissions.download');
 
     Route::prefix('catering-daily-menu')->group(function () {
         Route::get('/{id}/edit', [CrudMenu::class, 'edit'])->name('catering-daily-menu.edit');

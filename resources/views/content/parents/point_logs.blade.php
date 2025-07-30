@@ -1,4 +1,4 @@
-@extends('layouts/ContentParentLayout')
+@extends('layouts/ContentParentsLayout')
 
 @section('title', 'Point History')
 
