@@ -69,7 +69,7 @@
               </div>
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="role" id="roleTechnician" value="technician">
-                <label class="form-check-label" for="roleTechnician">Teknisi</label>
+                <label class="form-check-label" for="roleTechnician">Technician</label>
               </div>
             </div>
 

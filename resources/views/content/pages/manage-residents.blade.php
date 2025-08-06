@@ -43,61 +43,107 @@
 
 
   <div class="table-responsive text-nowrap">
-    <table class="table text-center">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Resident ID</th>
-          <th>Name</th>
-          <th>NIM</th>
-          <th>Email</th>
-          <th>Phone Number</th>
-          <th>Room Number</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody class="table-border-bottom-0">
-        @forelse ($residents as $index => $resident)
-        <tr>
-          <td>{{ $index + 1 }}</td>
-          <td>{{ $resident->id }}</td>
-          <td>{{ $resident->name }}</td>
-          <td>{{ $resident->student->nim ?? '-' }}</td>
-          <td>{{ $resident->email }}</td>
-          <td>{{ $resident->phone_number ?? '-' }}</td>
-          <td>{{ $resident->room_number ?? '-' }}</td>
-          <td>
-            <div class="dropdown">
-              <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bx bx-dots-vertical-rounded"></i>
-              </button>
-              <div class="dropdown-menu">
-                <form action="{{ route('admin.manage.residents.destroy', $resident->id) }}" method="POST" onsubmit="return confirm('Delete this resident?');">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="dropdown-item text-danger">
-                    <i class="bx bx-trash me-1"></i> Delete
-                  </button>
-                </form>
-              </div>
+  <table class="table text-center">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Resident ID</th>
+        <th>Name</th>
+        <th>NIM</th>
+        <th>Email</th>
+        <th>Phone Number</th>
+        <th>Room Number</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody class="table-border-bottom-0">
+      @forelse ($residents as $index => $resident)
+      <tr>
+        <td>{{ $residents->firstItem() + $index }}</td>
+        <td>{{ $resident->id }}</td>
+        <td>{{ $resident->name }}</td>
+        <td>{{ $resident->student->nim ?? '-' }}</td>
+        <td>{{ $resident->email }}</td>
+        <td>{{ $resident->phone_number ?? '-' }}</td>
+        <td>{{ $resident->room_number ?? '-' }}</td>
+        <td>
+          <div class="dropdown">
+            <button class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+              <i class="bx bx-dots-vertical-rounded"></i>
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editResidentModal{{ $resident->id }}">
+                <i class="bx bx-edit-alt me-1"></i> Edit
+              </a>
+              <form action="{{ route('admin.manage.residents.destroy', $resident->id) }}" method="POST" onsubmit="return confirm('Delete this resident?');">
+                @csrf @method('DELETE')
+                <button class="dropdown-item text-danger">
+                  <i class="bx bx-trash me-1"></i> Delete
+                </button>
+              </form>
             </div>
-          </td>
-        </tr>
-        @empty
-        <tr>
-          <td colspan="8" class="text-center">No residents found.</td>
-        </tr>
-        @endforelse
-      </tbody>
-    </table>
-  </div>
+          </div>
+        </td>
+      </tr>
+      @empty
+      <tr><td colspan="8" class="text-center">No residents found.</td></tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
 
-  <div class="card-footer text-muted text-center">
-    Showing {{ $residents->count() }} of {{ $residents->total() }} entries
-    {{-- Pastikan di controller pakai paginate() agar totalnya benar --}}
+{{-- Modal Edit --}}
+@foreach ($residents as $resident)
+<div class="modal fade" id="editResidentModal{{ $resident->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ route('admin.manage.residents.update', $resident->id) }}" class="modal-content">
+      @csrf @method('PUT')
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Resident</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-start">
+        <div class="mb-3">
+          <label class="form-label">Name <span class="text-danger">*</span></label>
+          <input name="name" type="text" class="form-control" value="{{ $resident->name }}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email <span class="text-danger">*</span></label>
+          <input name="email" type="email" class="form-control" value="{{ $resident->email }}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">NIM <span class="text-danger">*</span></label>
+          <input name="nim" type="text" class="form-control" value="{{ $resident->student->nim ?? '' }}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+          <input name="phone_number" type="text" class="form-control" value="{{ $resident->phone_number }}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Room Number <span class="text-danger">*</span></label>
+          <input name="room_number" type="text" class="form-control" value="{{ $resident->room_number }}" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Update</button>
+      </div>
+    </form>
   </div>
 </div>
+@endforeach
+
+<div class="card-footer d-flex justify-content-between align-items-center flex-column flex-md-row">
+  <div class="mb-2 mb-md-0 text-muted">
+    Showing {{ $residents->firstItem() }} to {{ $residents->lastItem() }} of {{ $residents->total() }} entries
+  </div>
+  <div>
+    {{ $residents->links() }}
+  </div>
+</div>
+
 <!--/ Manage Residents Table -->
+
 
 {{-- Modal Add Resident --}}
 <div class="modal fade" id="addResidentModal" tabindex="-1" aria-labelledby="addResidentModalLabel" aria-hidden="true">
@@ -126,13 +172,13 @@
         </div>
         {{-- Phone Number --}}
         <div class="mb-3">
-          <label class="form-label">Phone Number</label>
-          <input type="text" name="phone_number" class="form-control">
+          <label class="form-label">Phone Number <span class="text-danger">*</span></label>
+          <input type="text" name="phone_number" class="form-control" required>
         </div>
         {{-- Room Number --}}
         <div class="mb-3">
-          <label class="form-label">Room Number</label>
-          <input type="text" name="room_number" class="form-control">
+          <label class="form-label">Room Number <span class="text-danger">*</span></label>
+          <input type="text" name="room_number" class="form-control" required>
         </div>
       </div>
       <div class="modal-footer">
@@ -142,4 +188,5 @@
     </form>
   </div>
 </div>
+
 @endsection

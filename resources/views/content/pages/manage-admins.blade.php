@@ -49,80 +49,82 @@
   </div>
 
   <div class="table-responsive">
-    <table class="table text-center">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        @forelse ($admins as $index => $admin)
-        <tr>
-          <td>{{ $index + 1 }}</td>
-          <td>{{ $admin->name }}</td>
-          <td>{{ $admin->email }}</td>
-          <td>
-            <div class="dropdown">
-              <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                <i class="bx bx-dots-vertical-rounded"></i>
-              </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editAdminModal{{ $admin->id }}">
-                  <i class="bx bx-edit-alt me-1"></i> Edit
-                </a>
-                <form action="{{ route('admin.manage.admins.destroy', $admin->id) }}" method="POST" onsubmit="return confirm('Delete this admin?')">
-                  @csrf @method('DELETE')
-                  <button class="dropdown-item text-danger">
-                    <i class="bx bx-trash me-1"></i> Delete
-                  </button>
-                </form>
-              </div>
+  <table class="table text-center">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @forelse ($admins as $index => $admin)
+      <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $admin->name }}</td>
+        <td>{{ $admin->email }}</td>
+        <td>
+          <div class="dropdown">
+            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+              <i class="bx bx-dots-vertical-rounded"></i>
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editAdminModal{{ $admin->id }}">
+                <i class="bx bx-edit-alt me-1"></i> Edit
+              </a>
+              <form action="{{ route('admin.manage.admins.destroy', $admin->id) }}" method="POST" onsubmit="return confirm('Delete this admin?')">
+                @csrf @method('DELETE')
+                <button class="dropdown-item text-danger">
+                  <i class="bx bx-trash me-1"></i> Delete
+                </button>
+              </form>
             </div>
-
-            <!-- Edit Modal -->
-            <div class="modal fade" id="editAdminModal{{ $admin->id }}" tabindex="-1">
-              <div class="modal-dialog">
-                <form method="POST" action="{{ route('admin.manage.admins.update', $admin->id) }}" class="modal-content">
-                  @csrf @method('PUT')
-                  <div class="modal-header">
-                    <h5 class="modal-title">Edit Admin</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="mb-3">
-                      <label class="form-label">Name <span class="text-danger">*</span></label>
-                      <input type="text" name="name" class="form-control" value="{{ $admin->name }}" required>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Email <span class="text-danger">*</span></label>
-                      <input type="email" name="email" class="form-control" value="{{ $admin->email }}" required>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary">Update</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </td>
-        </tr>
-        @empty
-        <tr><td colspan="4">No admins found.</td></tr>
-        @endforelse
-      </tbody>
-    </table>
-  </div>
-
-  @if ($admins->hasPages())
-    <div class="card-footer">
-      {{ $admins->withQueryString()->links('vendor.pagination.bootstrap-5') }}
-    </div>
-  @endif
+          </div>
+        </td>
+      </tr>
+      @empty
+      <tr><td colspan="4">No admins found.</td></tr>
+      @endforelse
+    </tbody>
+  </table>
 </div>
+
+{{-- Modal Edit Dipindah ke Luar Tabel --}}
+@foreach ($admins as $admin)
+<div class="modal fade" id="editAdminModal{{ $admin->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ route('admin.manage.admins.update', $admin->id) }}" class="modal-content">
+      @csrf @method('PUT')
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Admin</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-start">
+        <div class="mb-3">
+          <label class="form-label">Name <span class="text-danger">*</span></label>
+          <input name="name" type="text" class="form-control" value="{{ $admin->name }}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email <span class="text-danger">*</span></label>
+          <input name="email" type="email" class="form-control" value="{{ $admin->email }}" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
+@endforeach
+
+{{-- Pagination --}}
+@if ($admins->hasPages())
+  <div class="card-footer">
+    {{ $admins->withQueryString()->links('vendor.pagination.bootstrap-5') }}
+  </div>
+@endif
 
 <!-- Modal Add Admin -->
 <div class="modal fade" id="addAdminModal" tabindex="-1">

@@ -36,7 +36,8 @@
         'menu_list',
         'feedback',
         'student-point',
-        'manage-pic'
+        'manage-pic',
+        'admin.permissions'
       ];
 
       $technicianOnlySlugs = [

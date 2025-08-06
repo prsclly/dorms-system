@@ -31,7 +31,7 @@ class ManageResidentController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:residents,email',
-            'phone_number' => 'nullable|string',
+            'phone_number' => 'required|string',
             'room_number' => 'required|string',
             'nim' => 'required|string|unique:students,nim',
         ]);
@@ -63,6 +63,31 @@ class ManageResidentController extends Controller
 
         return redirect()->back()->with('success', 'Resident added successfully and password sent by email.');
         }
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:residents,email,' . $id,
+            'phone_number' => 'required|string',
+            'room_number' => 'required|string',
+            'nim' => 'required|string|unique:students,nim,' . $id . ',resident_id',
+        ]);
+
+        $resident = Resident::findOrFail($id);
+        $resident->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'room_number' => $request->room_number,
+        ]);
+
+        // Update NIM di tabel students
+        $resident->student->update([
+            'nim' => $request->nim,
+        ]);
+
+        return redirect()->back()->with('success', 'Resident updated successfully.');
+    }
 
     public function destroy(Resident $resident)
     {

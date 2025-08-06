@@ -21,7 +21,7 @@
         <tbody class="table-border-bottom-0">
           @forelse($feedbacks as $index => $feedback)
             <tr>
-              <td>{{ $index + 1 }}</td>
+              <td>{{ $feedbacks->firstItem() + $index }}</td>
               <td>{{ $feedback->id }}</td>
               <td>{{ $feedback->report_id }}</td>
               <td>{{ $feedback->resident->name ?? '-' }}</td>
@@ -38,8 +38,12 @@
       </table>
     </div>
 
-    <div class="card-footer text-muted">
-      Showing {{ $feedbacks->count() }} of {{ $feedbacks->count() }} entries
-    </div>
+    <div class="card-footer d-flex justify-content-between align-items-center flex-column flex-md-row">
+  <div class="mb-2 mb-md-0 text-muted">
+    Showing {{ $feedbacks->firstItem() }} to {{ $feedbacks->lastItem() }} of {{ $feedbacks->total() }} entries
   </div>
+  <div>
+    {{ $feedbacks->links() }}
+  </div>
+</div>
 @endsection

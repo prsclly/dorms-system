@@ -14,7 +14,7 @@
                 "url": "/profile",
                 "name": "Profile",
                 "icon": "menu-icon tf-icons bx bx-user",
-                "slug": "resident-profile",
+                "slug": "resident.profile",
                 "role": "resident"
             },
             {
@@ -24,7 +24,7 @@
                 "url": "resident/report-history",
                 "name": "My Reports",
                 "icon": "menu-icon tf-icons bx bx-notepad",
-                "slug": "resident-report-history"
+                "slug": "resident.report.history"
             },
             {
                 "menuHeader": "Catering"

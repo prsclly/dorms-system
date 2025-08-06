@@ -10,8 +10,8 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
-        // Ambil technician yang sedang login (asumsi session atau Auth)
-        $technicianId = auth()->id();  // Kalau pakai auth default, sesuaikan kalau beda
+        // Ambil technician yang sedang login
+        $technicianId = auth()->id(); 
 
         // Query task yang berkaitan dengan technician ini, dengan relasi report dan resident
         $query = Task::with(['report.resident'])
@@ -22,10 +22,15 @@ class TaskController extends Controller
             $query->where('status', $request->status);
         }
 
-        $tasks = $query->orderBy('updated_at', 'desc')->get();
+        // Filter berdasarkan tanggal assigned_at
+        if ($request->has('date') && $request->date) {
+            $query->whereDate('assigned_at', $request->date);
+        }
+
+        $tasks = $query->orderBy('updated_at', 'desc')->paginate(10)->withQueryString();
 
         // Status untuk dropdown filter
-        $statuses = ['Pending', 'Assigned', 'In Progress', 'Completed'];
+        $statuses = ['Assigned', 'In Progress', 'Completed'];
 
         return view('content.tables.task', compact('tasks', 'statuses'));
     }

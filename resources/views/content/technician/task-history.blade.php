@@ -1,4 +1,4 @@
-@extends('layouts/contentNavbarLayout')
+@extends('layouts/contentTechniciansLayout')
 
 @section('title', 'Task History')
 

@@ -84,10 +84,10 @@
               </div>
             </div>
 
-            <!-- Edit Modal -->
+            <!-- Modal berada di luar tabel tapi dalam loop -->
             <div class="modal fade" id="editTechnicianModal{{ $technician->id }}" tabindex="-1">
               <div class="modal-dialog">
-                <form method="POST" action="{{ route('admin.manage.technicians.update', $technician->id) }}" class="modal-content">
+                <form method="POST" action="{{ route('admin.manage.technicians.update', $technician->id) }}" class="modal-content text-start">
                   @csrf @method('PUT')
                   <div class="modal-header">
                     <h5 class="modal-title">Edit Technician</h5>
@@ -120,18 +120,23 @@
                 </form>
               </div>
             </div>
+
           </td>
         </tr>
         @empty
-        <tr><td colspan="5">No technicians found.</td></tr>
+          <tr>
+            <td colspan="5" class="text-muted">No technicians found.</td>
+          </tr>
         @endforelse
       </tbody>
     </table>
   </div>
 
-  <div class="card-footer text-center text-muted">
-    Showing {{ $technicians->count() }} of {{ $technicians->total() }} entries
-    <div class="mt-2">
+  <div class="card-footer d-flex justify-content-between align-items-center flex-column flex-md-row">
+    <div class="mb-2 mb-md-0 text-muted">
+      Showing {{ $technicians->firstItem() }} to {{ $technicians->lastItem() }} of {{ $technicians->total() }} entries
+    </div>
+    <div>
       {{ $technicians->withQueryString()->links() }}
     </div>
   </div>

@@ -11,7 +11,8 @@ class FeedbackReportController extends Controller
     {
         $feedbacks = FeedbackReport::with(['report', 'resident'])
             ->orderBy('submitted_at', 'desc')
-            ->get();
+            ->paginate(10)
+            ->withQueryString();
 
         if ($feedbacks->isEmpty()) {
             session()->flash('info', 'No feedback data found.');

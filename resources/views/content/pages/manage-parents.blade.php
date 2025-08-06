@@ -28,96 +28,97 @@
   </div>
 
   <div class="table-responsive text-nowrap">
-    <table class="table text-center">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Children</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody class="table-border-bottom-0">
-        @forelse ($parents as $index => $parent)
-        <tr>
-          <td>{{ $index + 1 }}</td>
-          <td>{{ $parent->name }}</td>
-          <td>{{ $parent->email }}</td>
-          <td>
-            @foreach ($parent->students as $student)
-              <span class="badge bg-label-primary me-1">{{ $student->name }}</span>
+  <table class="table text-center">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Children</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody class="table-border-bottom-0">
+      @forelse ($parents as $index => $parent)
+      <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ $parent->name }}</td>
+        <td>{{ $parent->email }}</td>
+        <td>
+          @foreach ($parent->students as $student)
+            <span class="badge bg-label-primary me-1">{{ $student->name }}</span>
+          @endforeach
+        </td>
+        <td>
+          <div class="dropdown">
+            <button class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+              <i class="bx bx-dots-vertical-rounded"></i>
+            </button>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editParentModal{{ $parent->id }}">
+                <i class="bx bx-edit-alt me-1"></i> Edit
+              </a>
+              <form action="{{ route('admin.manage.parents.destroy', $parent->id) }}" method="POST" onsubmit="return confirm('Delete this parent?');">
+                @csrf @method('DELETE')
+                <button class="dropdown-item text-danger">
+                  <i class="bx bx-trash me-1"></i> Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        </td>
+      </tr>
+      @empty
+      <tr><td colspan="5">No parents found.</td></tr>
+      @endforelse
+    </tbody>
+  </table>
+</div>
+
+{{-- Modal Edit Dipindah ke Luar Tabel --}}
+@foreach ($parents as $parent)
+<div class="modal fade" id="editParentModal{{ $parent->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ route('admin.manage.parents.update', $parent->id) }}" class="modal-content">
+      @csrf @method('PUT')
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Parent</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-start">
+        <div class="mb-3">
+          <label class="form-label">Name <span class="text-danger">*</span></label>
+          <input name="name" type="text" class="form-control" value="{{ $parent->name }}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email <span class="text-danger">*</span></label>
+          <input name="email" type="email" class="form-control" value="{{ $parent->email }}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Select Children <span class="text-danger">*</span></label>
+          <input type="text" id="search-student-edit-{{ $parent->id }}" class="form-control mb-2" placeholder="Search student...">
+          <div class="form-check d-flex flex-column gap-1 student-checkbox-list-edit-{{ $parent->id }}">
+            @foreach ($allStudents as $student)
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="student_ids[]" value="{{ $student->id }}"
+                  {{ in_array($student->id, $parent->students->pluck('id')->toArray()) ? 'checked' : '' }}>
+                {{ $student->name }} ({{ $student->nim }})
+              </label>
             @endforeach
-          </td>
-          <td>
-            <div class="dropdown">
-              <button class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                <i class="bx bx-dots-vertical-rounded"></i>
-              </button>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editParentModal{{ $parent->id }}">
-                  <i class="bx bx-edit-alt me-1"></i> Edit
-                </a>
-                <form action="{{ route('admin.manage.parents.destroy', $parent->id) }}" method="POST" onsubmit="return confirm('Delete this parent?');">
-                  @csrf @method('DELETE')
-                  <button class="dropdown-item text-danger">
-                    <i class="bx bx-trash me-1"></i> Delete
-                  </button>
-                </form>
-              </div>
-            </div>
-
-            <!-- Edit Modal -->
-            <div class="modal fade" id="editParentModal{{ $parent->id }}" tabindex="-1">
-              <div class="modal-dialog">
-                <form method="POST" action="{{ route('admin.manage.parents.update', $parent->id) }}" class="modal-content">
-                  @csrf @method('PUT')
-                  <div class="modal-header">
-                    <h5 class="modal-title">Edit Parent</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="mb-3">
-                      <label class="form-label">Name <span class="text-danger">*</span></label>
-                      <input name="name" type="text" class="form-control" value="{{ $parent->name }}" required>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Email <span class="text-danger">*</span></label>
-                      <input name="email" type="email" class="form-control" value="{{ $parent->email }}" required>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Select Children <span class="text-danger">*</span></label>
-                      <input type="text" id="search-student-edit-{{ $parent->id }}" class="form-control mb-2" placeholder="Search student...">
-                      <div class="form-check d-flex flex-column gap-1 student-checkbox-list-edit-{{ $parent->id }}">
-                        @foreach ($allStudents as $student)
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="student_ids[]" value="{{ $student->id }}"
-                              {{ in_array($student->id, $parent->students->pluck('id')->toArray()) ? 'checked' : '' }}>
-                            {{ $student->name }} ({{ $student->nim }})
-                          </label>
-                        @endforeach
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary">Update</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </td>
-        </tr>
-        @empty
-        <tr><td colspan="5">No parents found.</td></tr>
-        @endforelse
-      </tbody>
-    </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Update</button>
+      </div>
+    </form>
   </div>
+</div>
+@endforeach
 
-  <div class="card-footer text-center text-muted">
-    Showing {{ $parents->count() }} of {{ $parents->total() }} entries
-  </div>
+<div class="card-footer text-center text-muted">
+  Showing {{ $parents->count() }} of {{ $parents->total() }} entries
 </div>
 
 <!-- Add Modal -->

@@ -37,7 +37,7 @@ class Basic extends Controller
         }
 
         // Ambil hasil akhir setelah filter
-        $reports = $query->orderBy('submitted_at', 'desc')->get();
+        $reports = $query->orderBy('submitted_at', 'desc')->paginate(10)->withQueryString();
 
         // Ambil semua kategori unik dari laporan (untuk dropdown filter)
         $categories = Report::select('category')->distinct()->pluck('category');
@@ -77,4 +77,31 @@ class Basic extends Controller
 
         return redirect()->back()->with('success', 'Technician assigned successfully.');
     }
+
+    public function rejectReport(Report $report)
+    {
+        // Cek apakah sudah ada task
+        $task = Task::where('report_id', $report->id)->first();
+
+        if (!$task) {
+            // Buat task baru dengan status Rejected
+            $task = new Task([
+                'report_id' => $report->id,
+                'technician_id' => null, // atau sesuaikan jika nullable
+                'status' => 'Rejected',
+            ]);
+        } else {
+            // Ubah status jadi Rejected saja
+            $task->status = 'Rejected';
+            $task->technician_id = null; // kosongkan teknisi
+        }
+
+        $task->assigned_at = null;
+        $task->proof_photo = null;
+        $task->save();
+
+        return redirect()->back()->with('success', 'Report has been rejected.');
+    }
+
+
 }

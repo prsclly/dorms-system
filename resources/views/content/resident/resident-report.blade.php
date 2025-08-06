@@ -65,6 +65,9 @@
             </div>
           @endforeach
         </div>
+        <div class="mt-3">
+          {{ $reports->links('vendor.pagination.bootstrap-5') }}
+        </div>
       </div>
     </div>
   </div>
@@ -115,6 +118,7 @@
         <div class="col-md-12">
           <label class="form-label">Photo (optional)</label>
           <input type="file" name="photo" class="form-control" accept="image/*">
+          <small id="photo-file-name" class="text-muted mt-1 d-block"></small>
         </div>
         <div class="col-md-12">
           <label class="form-label">Description</label>
@@ -236,8 +240,18 @@ function editReport(id) {
       form.action = `/resident/report-history/update/${id}`;
       document.getElementById('methodField').value = 'POST';
 
+      // Set category & description
       document.querySelector('#addReportModal select[name="category"]').value = data.title.split(' ')[0];
       document.querySelector('#addReportModal textarea[name="description"]').value = data.description;
+
+      // Set file name preview (jika ada foto)
+      const fileNamePreview = document.getElementById('photo-file-name');
+      if (data.image) {
+        const fileName = data.image.split('/').pop();
+        fileNamePreview.textContent = `Current photo: ${fileName}`;
+      } else {
+        fileNamePreview.textContent = '';
+      }
 
       document.getElementById('addReportModalLabel').innerText = 'Edit Report';
       modal.show();
@@ -252,6 +266,7 @@ document.getElementById('addReportModal').addEventListener('hidden.bs.modal', ()
   document.querySelector('#addReportModal select[name="category"]').value = '';
   document.querySelector('#addReportModal textarea[name="description"]').value = '';
   document.querySelector('#addReportModal input[name="photo"]').value = '';
+  document.getElementById('photo-file-name').textContent = '';
 });
 </script>
 

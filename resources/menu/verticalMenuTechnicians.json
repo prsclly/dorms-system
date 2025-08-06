@@ -1,0 +1,29 @@
+{
+  "menu": [
+    {
+      "url": "/technician/dashboard",
+      "name": "Dashboard",
+      "icon": "menu-icon tf-icons bx bx-home",
+      "slug": "technician-dashboard",
+      "role": "technician"
+    },
+    {
+      "menuHeader": "Technician Menu",
+      "role": "technician"
+    },
+    {
+      "url": "/technician/tasks",
+      "name": "Task List",
+      "icon": "menu-icon tf-icons bx bx-task",
+      "slug": "technician-tasks",
+      "role": "technician"
+    },
+    {
+      "url": "/technician/task-history",
+      "name": "Task History",
+      "icon": "menu-icon tf-icons bx bx-history",
+      "slug": "technician-history",
+      "role": "technician"
+    }
+  ]
+}

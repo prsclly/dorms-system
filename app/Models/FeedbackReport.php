@@ -18,6 +18,10 @@ class FeedbackReport extends Model
         'submitted_at',
     ];
 
+    protected $casts = [
+    'submitted_at' => 'datetime',
+    ];
+
     public function report()
     {
         return $this->belongsTo(Report::class);

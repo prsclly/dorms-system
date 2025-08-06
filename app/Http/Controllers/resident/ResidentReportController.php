@@ -20,8 +20,8 @@ class ResidentReportController extends Controller
         }
 
         $reports = Report::where('resident_id', $residentId)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        ->orderBy('created_at', 'desc')
+        ->paginate(7); // 7 report per page
 
         return view('content.resident.resident-report', compact('reports'));
     }

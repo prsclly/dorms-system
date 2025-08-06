@@ -1,18 +1,15 @@
-
 @extends('layouts/contentNavbarLayout')
 
 @section('title', 'All Reports')
 
-
 @section('content')
-
 <div class="row">
   <div class="col-md-12">
     <div class="nav-align-top">
       <ul class="nav nav-pills flex-column flex-md-row mb-6">
         <li class="nav-item">
           <a class="nav-link" href="{{ url('report/dashboard') }}">
-            <i class="bx bx-dock-top bx-sm me-2"></i>Dashboard
+            <i class="bx bx-dock-top bx-sm me-2"></i>Report Dashboard
           </a>
         </li>
         <li class="nav-item">
@@ -43,6 +40,7 @@
         <option value="Assigned" {{ request('status') == 'Assigned' ? 'selected' : '' }}>Assigned</option>
         <option value="In Progress" {{ request('status') == 'In Progress' ? 'selected' : '' }}>In Progress</option>
         <option value="Completed" {{ request('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
+        <option value="Rejected" {{ request('status') == 'Rejected' ? 'selected' : '' }}>Rejected</option>
       </select>
 
       <a href="{{ url()->current() }}" class="text-danger d-flex align-items-center" style="font-size: 0.875rem;">
@@ -118,16 +116,19 @@
 
         <!-- Modal Assign -->
         <div class="modal fade" id="assignModal{{ $report->id }}" tabindex="-1" aria-labelledby="assignModalLabel{{ $report->id }}" aria-hidden="true">
-          <div class="modal-dialog"> <!-- Kembali ke modal ukuran normal -->
-            <form method="POST" action="{{ route('assign.technician', ['report' => $report->id]) }}">
-              @csrf
-              <div class="modal-content">
+          <div class="modal-dialog">
+            <div class="modal-content">
+
+              <!-- Form Assign (dibuka) -->
+              <form method="POST" action="{{ route('assign.technician', ['report' => $report->id]) }}">
+                @csrf
                 <div class="modal-header">
                   <h5 class="modal-title" id="assignModalLabel{{ $report->id }}">Assign Technician</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body">
+                  <!-- Detail Laporan -->
                   <div class="mb-2">
                     <strong>Category:</strong> {{ $report->category }}
                   </div>
@@ -156,14 +157,23 @@
                   </div>
                 </div>
 
-                <div class="modal-footer">
+                <!-- Footer: tombol Assign & Reject sejajar kanan -->
+                <div class="modal-footer justify-content-end gap-2">
+                  <!-- Tombol Assign -->
                   <button type="submit" class="btn btn-primary">Assign</button>
-                  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+              </form> <!-- ⛔️ Tutup form Assign di sini -->
+
+                  <!-- Form Reject (terpisah) -->
+                  <form method="POST" action="{{ route('reject.report', ['report' => $report->id]) }}">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">Reject</button>
+                  </form>
                 </div>
-              </div>
-            </form>
+
+            </div>
           </div>
         </div>
+
 
         @empty
         <tr>
@@ -173,9 +183,13 @@
       </tbody>
     </table>
   </div>
-  <div class="card-footer text-muted text-center">
-    Showing {{ $reports->count() }} of {{ $reports->count() }} entries
+  <div class="card-footer d-flex justify-content-between align-items-center flex-column flex-md-row">
+  <div class="mb-2 mb-md-0 text-muted">
+    Showing {{ $reports->firstItem() }} to {{ $reports->lastItem() }} of {{ $reports->total() }} entries
+  </div>
+  <div>
+    {{ $reports->links() }}
   </div>
 </div>
-<!--/ All Reports Table -->
+</div>
 @endsection

@@ -30,10 +30,13 @@
     const passwordInput = document.getElementById('password');
 
     editBtn.addEventListener('click', () => {
-        inputs.forEach(input => input.disabled = false);
-        passwordInput.value = '';          // kosongkan biar user isi password baru
-        passwordInput.disabled = false;    // enable input password
-        actionButtons.classList.remove('d-none');
+      inputs.forEach(input => {
+        if (input.id !== 'nim') {
+          input.removeAttribute('readonly');
+        }
+      });
+      passwordInput.value = '';
+      actionButtons.classList.remove('d-none');
     });
 
     cancelBtn.addEventListener('click', () => {
@@ -58,23 +61,23 @@
           <div class="row g-4">
             <div class="col-md-6">
               <label for="name" class="form-label">Name</label>
-              <input class="form-control" type="text" id="name" name="name" value="{{ $resident->name }}" disabled />
+              <input class="form-control" type="text" id="name" name="name" value="{{ $resident->name }}" readonly />
             </div>
             <div class="col-md-6">
               <label for="email" class="form-label">Email</label>
-              <input class="form-control" type="email" id="email" name="email" value="{{ $resident->email }}" disabled />
+              <input class="form-control" type="email" id="email" name="email" value="{{ $resident->email }}" readonly />
             </div>
             <div class="col-md-6">
               <label for="phone_number" class="form-label">Phone Number</label>
-              <input class="form-control" type="text" id="phone_number" name="phone_number" value="{{ $resident->phone_number }}" disabled />
+              <input class="form-control" type="text" id="phone_number" name="phone_number" value="{{ $resident->phone_number }}" readonly />
             </div>
             <div class="col-md-6">
               <label for="room_number" class="form-label">Room Number</label>
-              <input class="form-control" type="text" id="room_number" name="room_number" value="{{ $resident->room_number }}" disabled />
+              <input class="form-control" type="text" id="room_number" name="room_number" value="{{ $resident->room_number }}" readonly />
             </div>
             <div class="col-md-6">
               <label for="nim" class="form-label">NIM</label>
-              <input class="form-control" type="text" id="nim" name="nim" value="{{ $student->nim ?? '' }}" disabled />
+              <input class="form-control" type="text" id="nim" name="nim" value="{{ $student->nim ?? '' }}" readonly />
             </div>
             <div class="col-md-6">
               <label for="password" class="form-label">Password</label>
@@ -85,7 +88,7 @@
                   id="password"
                   name="password"
                   placeholder="Enter new password (optional)"
-                  disabled />
+                  readonly />
               </div>
               @error('password')
                 <small class="text-danger">{{ $message }}</small>

@@ -37,7 +37,7 @@ use App\Http\Controllers\admin\AdminPermissionController;
 use App\Http\Controllers\admin\PermissionApprovalController;
 use App\Http\Controllers\resident\PermissionHistoryController;
 use App\Http\Controllers\parents\ParentPermissionController;
-
+use App\Http\Controllers\technician\TechnicianDashboardController;
 
 
 // Main Page Route
@@ -47,7 +47,7 @@ Route::get('/', function () {
   } elseif (auth('resident')->check()) {
       return redirect()->route('resident.dashboard');
   } elseif (auth('technician')->check()) {
-      return redirect()->route('admin.dashboard'); // sesuaikan kalau teknisi punya dashboard khusus
+      return redirect()->route('technician.dashboard');
   } else {
       return redirect()->route('resident.login');
   }
@@ -58,6 +58,8 @@ Route::get('/admin/login', [LoginBasic::class, 'index'])->name('auth-login-basic
 Route::post('/admin/login', [LoginBasic::class, 'login'])->name('auth-login-basic-post');
 // Logout
 Route::post('/logout', [LoginBasic::class, 'logout'])->name('admin.logout');
+// Technician logout
+Route::post('/technician/logout', [LoginBasic::class, 'logoutTechnician'])->name('technician.logout');
 
 // Resident login routes
 Route::get('/resident/login', [LoginResident::class, 'index'])->name('resident.login');
@@ -74,6 +76,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('admin/reports', [TablesBasic::class, 'index'])->name('tables-basic');
     Route::post('/assign-task/{report}', [TablesBasic::class, 'assignTechnician'])->name('assign.technician');
     Route::get('/report/dashboard', [ReportDashboardController::class, 'index'])->name('report.dashboard');
+    Route::post('/report/{report}/reject', [TablesBasic::class, 'rejectReport'])->name('reject.report');
 
     // Feedback (admin)
     Route::get('/admin/feedback-reports', [FeedbackReportController::class, 'index'])->name('tables-feedback-reports');
@@ -91,6 +94,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('admin/manage-residents', [ManageResidentController::class, 'store'])->name('admin.manage.residents.store');
     Route::post('admin/manage-residents/invite/{resident}', [ManageResidentController::class, 'sendInvite'])->name('admin.manage.residents.invite');
     Route::delete('admin/manage-residents/{resident}', [ManageResidentController::class, 'destroy'])->name('admin.manage.residents.destroy');
+    Route::put('/admin/manage-resident/update/{id}', [ManageResidentController::class, 'update'])->name('admin.manage.residents.update');
 
     // Manage Parents (Hanya Admin)
     Route::get('admin/manage-parents', [ManageParentController::class, 'index'])->name('admin.manage.parents');
@@ -102,7 +106,6 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('admin/manage-admins', [ManageAdminController::class, 'store'])->name('admin.manage.admins.store');
     Route::put('admin/manage-admins/{admin}', [ManageAdminController::class, 'update'])->name('admin.manage.admins.update');
     Route::delete('admin/manage-admins/{admin}', [ManageAdminController::class, 'destroy'])->name('admin.manage.admins.destroy');
-
 
     //feedback menu
     Route::get('admin/catering/issue_log', [feedback::class, 'index'])->name('feedback-list');
@@ -146,13 +149,14 @@ Route::middleware(['auth:admin'])->group(function () {
 // ==========================
 // Technician Routes
 // ==========================
-Route::middleware(['auth:technician'])->group(function () {
+Route::middleware(['auth:technician'])->prefix('technician')->name('technician.')->group(function () {
+    
     // Technician Dashboard
-    Route::get('/admin/dashboard', [Analytics::class, 'index'])->name('admin.dashboard');
+    Route::get('/dashboard', [TechnicianDashboardController::class, 'index'])->name('dashboard');
 
     // Technician tasks
-    Route::get('/technician/tasks', [TaskController::class, 'index'])->name('technician.tasks');
-    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('technician.tasks.updateStatus');
+    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks');
+    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
 
     Route::get('/task-history', [TaskHistoryController::class, 'index'])->name('technician.task-history');
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Admin;
+use App\Models\Technician;
 
 class LoginBasic extends Controller
 {
@@ -38,7 +39,7 @@ class LoginBasic extends Controller
             if ($technician && $request->password === $technician->password) {
                 Auth::guard('technician')->login($technician);
                 $request->session()->put('user_role', 'technician');
-                return redirect()->route('admin.dashboard');
+                return redirect()->route('technician.dashboard');
             }
 
         }
@@ -46,6 +47,14 @@ class LoginBasic extends Controller
         return back()->with('error', 'Email or password is incorrect.');
     }
 
+    public function logoutTechnician(Request $request)
+    {
+        Auth::guard('technician')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('auth-login-basic');
+    }
 
     // Logout admin
     public function logout()
