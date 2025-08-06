@@ -63,7 +63,28 @@
     </div>
   </div>
 
-
+  <div class="col-md-4 mb-3">
+    <div class="card h-100">
+      <div class="card-body d-flex flex-column justify-content-between h-100">
+        <div>
+          <h6 class="card-title">Today's Catering</h6>
+          @php $mealOrder = ['Breakfast', 'Lunch', 'Dinner']; @endphp
+          @forelse ($mealOrder as $mealType)
+            <div class="mb-1">
+              <strong>{{ $mealType }}:</strong>
+              <span>
+                {{ isset($todayMeals[$mealType]) && $todayMeals[$mealType]->first() ? $todayMeals[$mealType]->first()->menu_description : 'Not set' }}
+              </span>
+            </div>
+          @empty
+            <p class="text-muted mb-1">Menu has not been added yet.</p>
+          @endforelse
+        </div>
+        <a href="{{ url('admin/catering/menu') }}" class="btn btn-sm btn-outline-danger w-auto align-self-start mt-2">Update Menu Now</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 {{-- Dorm & Catering Issues + Shortcut --}}
 <div class="row g-4">

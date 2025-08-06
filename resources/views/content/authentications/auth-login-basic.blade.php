@@ -75,14 +75,6 @@
               </div>
             </div>
 
-            <div class="mb-4 d-flex justify-content-between align-items-center">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="remember-me" name="remember">
-                <label class="form-check-label" for="remember-me"> Remember Me </label>
-              </div>
-              <a href="#">Forgot Password?</a>
-            </div>
-
             <div class="mb-3">
               <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
             </div>

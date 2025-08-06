@@ -36,14 +36,15 @@ class ManageResidentController extends Controller
             'nim' => 'required|string|unique:students,nim',
         ]);
 
-        $randomPassword = Str::random(8);
+        $formattedName = strtolower(str_replace(' ', '', $request->name));
+        $customPassword = 'resident' . $formattedName;
 
         $resident = Resident::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone_number' => $request->phone_number,
             'room_number' => $request->room_number,
-            'password' => Hash::make($randomPassword),
+            'password' => Hash::make($customPassword),
         ]);
 
         Student::create([
@@ -55,7 +56,7 @@ class ManageResidentController extends Controller
         // Kirim email berisi password ke resident
         Mail::send('emails.resident-password', [
             'resident' => $resident,
-            'password' => $randomPassword
+            'password' => $customPassword
         ], function ($message) use ($resident) {
             $message->to($resident->email)
                     ->subject('Your Account Credentials - Dorm System');
