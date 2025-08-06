@@ -86,7 +86,7 @@
         <tr>
           <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Date</th>
           <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Meal Time</th>
-          <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">PIC</th>
+          <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Vendor</th>
           <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Category</th>
           <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Description</th>
           <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Submitted at</th>

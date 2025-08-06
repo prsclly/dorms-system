@@ -138,7 +138,7 @@
   <div class="card h-100">
     <div class="card-header d-flex justify-content-between align-items-center">
       <div class="card-title mb-0">
-        <h5 class="mb-1 me-2">PIC Performance</h5>
+        <h5 class="mb-1 me-2">Vendor Performance</h5>
       </div>
       <div>
         <select id="timeFilter" class="form-select form-select-sm">

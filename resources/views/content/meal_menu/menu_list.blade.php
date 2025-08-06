@@ -31,12 +31,22 @@
 <hr class="my-3">
 
 @php
-    $picColors = [
-        'Bu Sri' => 'badge bg-label-info me-1',    // Biru
-        'Pak Dafio' => 'badge bg-label-success me-1', // Hijau
-        'Pak Sigit' => 'badge bg-label-primary me-1', // Kuning
-    ];
+    $getPicColorClass = function($name) {
+        $colors = [
+            'bg-label-primary',
+            'bg-label-success',
+            'bg-label-info',
+            'bg-label-warning',
+            'bg-label-danger',
+            'bg-label-secondary',
+            'bg-label-dark',
+        ];
+
+        $index = crc32($name) % count($colors);
+        return 'badge ' . $colors[$index] . ' me-1';
+    };
 @endphp
+
 
 @forelse($mealsByDate as $date => $meals)
   <div class="card mb-4">
@@ -71,24 +81,25 @@
             <th>Meal Time</th>
             <th>Time</th>
             <th>Menu</th>
-            <th>PIC</th>
+            <th>Vendor</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
           @foreach($meals as $meal)
-            @php
-              $colorClass = $picColors[$meal->pic->name ?? ''] ?? 'badge-secondary';
-            @endphp
+@php
+  $colorClass = isset($meal->pic->name) ? $getPicColorClass($meal->pic->name) : 'badge bg-label-secondary me-1';
+@endphp
+
             <tr>
-              <td>{{ $meal->meal_type }}</td>
-              <td>{{ $meal->time }}</td>
-              <td>{{ $meal->menu_description }}</td>
-              <td>
-                <span class="badge {{ $colorClass }}">
-                  {{ $meal->pic->name ?? '—' }}
-                </span>
-              </td>
+ <td>{{ $meal->meal_type }}</td>
+  <td>{{ $meal->time }}</td>
+  <td>{{ $meal->menu_description }}</td>
+  <td>
+    <span class="{{ $colorClass }}">
+      {{ $meal->pic->name ?? '—' }}
+    </span>
+  </td>
               <td>
                 <button class="btn btn-sm btn-outline-primary"
                         data-bs-toggle="modal"
@@ -156,7 +167,7 @@
           </div>
 
           <div class="mb-3">
-            <label for="edit-pic" class="form-label">PIC</label>
+            <label for="edit-pic" class="form-label">Vendor</label>
             <select name="pic_id" id="edit-pic" class="form-select">
               <option value="">Choose One</option>
               @foreach($pics as $pic)
@@ -203,7 +214,7 @@
             </div>
             <div class="col-md-4">
               <select class="form-select" name="meals[breakfast][pic_id]" required>
-                <option value="" disabled selected>PIC</option>
+                <option value="" disabled selected>Vendor</option>
                 @foreach($pics as $pic)
                   <option value="{{ $pic->id }}">{{ $pic->name }}</option>
                 @endforeach
@@ -222,7 +233,7 @@
             </div>
             <div class="col-md-4">
               <select class="form-select" name="meals[lunch][pic_id]" required>
-                <option value="" disabled selected>PIC</option>
+                <option value="" disabled selected>Vendor</option>
                 @foreach($pics as $pic)
                   <option value="{{ $pic->id }}">{{ $pic->name }}</option>
                 @endforeach
@@ -241,7 +252,7 @@
             </div>
             <div class="col-md-4">
               <select class="form-select" name="meals[dinner][pic_id]" required>
-                <option value="" disabled selected>PIC</option>
+                <option value="" disabled selected>Vendor</option>
                 @foreach($pics as $pic)
                   <option value="{{ $pic->id }}">{{ $pic->name }}</option>
                 @endforeach
@@ -319,7 +330,7 @@
           </div>
 
           <div class="mb-3">
-            <label for="add-pic" class="form-label">PIC</label>
+            <label for="add-pic" class="form-label">Vendor</label>
             <select name="pic_id" id="add-pic" class="form-select" required>
               <option value="" disabled selected>Choose One</option>
               @foreach($pics as $pic)

@@ -18,6 +18,17 @@
             background-color: #f8f9fa !important;
             color: #6c757d;
         }
+
+        /* Hilangkan panah number input */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
     </style>
 
     <div class="row">
@@ -27,34 +38,62 @@
                     <h5 class="mb-0">Add New Point Log - {{ $student->name }}</h5>
                 </div>
                 <div class="card-body">
+
+                    {{-- Show global error alert if any --}}
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <strong>There were some problems with your input:</strong>
+                            <ul class="mb-0 mt-2">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <form method="POST" action="{{ route('store_log', ['id' => $student->id]) }}">
                         @csrf
                         <input type="hidden" name="nim" value="{{ $student->nim }}">
 
                         <div class="mb-3">
                             <label for="date" class="form-label">Change Date</label>
-                            <input type="datetime-local" class="form-control" name="date" required>
+                            <input type="datetime-local" class="form-control @error('date') is-invalid @enderror" name="date" required>
+                            @error('date')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="category" class="form-label">Category</label>
-                            <select class="form-control bg-placeholder text-dark" name="category" id="category" required>
+                            <select class="form-control bg-placeholder text-dark @error('category') is-invalid @enderror" name="category" id="category" required>
                                 <option value="" disabled selected>-- Select Category --</option>
-                                <option value="Appreciation" class="bg-appreciation text-dark">Appreciation (e.g.,
-                                    achievement, good deeds)</option>
-                                <option value="Violation" class="bg-violation text-dark">Violation (e.g., misconduct,
-                                    lateness)</option>
+                                <option value="Appreciation" class="bg-appreciation text-dark" {{ old('category') === 'Appreciation' ? 'selected' : '' }}>
+                                    Appreciation (e.g., achievement, good deeds)
+                                </option>
+                                <option value="Violation" class="bg-violation text-dark" {{ old('category') === 'Violation' ? 'selected' : '' }}>
+                                    Violation (e.g., misconduct, lateness)
+                                </option>
                             </select>
+                            @error('category')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control" name="description" rows="2" required></textarea>
+                            <textarea class="form-control @error('description') is-invalid @enderror" name="description" rows="2" required>{{ old('description') }}</textarea>
+                            @error('description')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
                             <label for="point_change" class="form-label">Points Changed</label>
-                            <input type="number" class="form-control" name="point_change" id="point_change" required>
+                            <input type="number" class="form-control @error('point_change') is-invalid @enderror" name="point_change" id="point_change"
+                                value="{{ old('point_change') }}" required>
+                            @error('point_change')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-3">
@@ -68,11 +107,9 @@
                             <input type="number" class="form-control" name="new_point" id="new_point" readonly>
                         </div>
 
-                        <!-- Tombol sejajar: Submit kiri, Cancel kanan -->
                         <div class="d-flex justify-content-between mt-4">
                             <button type="submit" class="btn btn-success">Submit</button>
-                            <a href="{{ route('edit_student_point', ['id' => $student->id]) }}"
-                                class="btn btn-secondary">Cancel</a>
+                            <a href="{{ route('edit_student_point', ['id' => $student->id]) }}" class="btn btn-secondary">Cancel</a>
                         </div>
                     </form>
                 </div>
@@ -93,6 +130,26 @@
                 newPointInput.value = previous + change;
             }
 
+            function enforceSignRule() {
+                const category = categorySelect.value;
+                const currentValue = parseInt(pointChangeInput.value) || 0;
+
+                if (category === 'Appreciation') {
+                    if (currentValue < 0) pointChangeInput.value = Math.abs(currentValue);
+                    pointChangeInput.setAttribute("min", "1");
+                    pointChangeInput.removeAttribute("max");
+                } else if (category === 'Violation') {
+                    if (currentValue > 0) pointChangeInput.value = -Math.abs(currentValue);
+                    pointChangeInput.setAttribute("max", "-1");
+                    pointChangeInput.removeAttribute("min");
+                } else {
+                    pointChangeInput.removeAttribute("min");
+                    pointChangeInput.removeAttribute("max");
+                }
+
+                updateNewPoint();
+            }
+
             function updateCategoryColor() {
                 categorySelect.classList.remove('bg-appreciation', 'bg-violation', 'bg-placeholder');
                 if (categorySelect.value === 'Appreciation') {
@@ -104,11 +161,19 @@
                 }
             }
 
-            pointChangeInput.addEventListener("input", updateNewPoint);
-            categorySelect.addEventListener("change", updateCategoryColor);
+            pointChangeInput.addEventListener("input", function () {
+                enforceSignRule();
+            });
 
-            updateNewPoint();       // inisialisasi
-            updateCategoryColor();  // inisialisasi
+            categorySelect.addEventListener("change", function () {
+                enforceSignRule();
+                updateCategoryColor();
+            });
+
+            // Inisialisasi
+            enforceSignRule();
+            updateCategoryColor();
+            updateNewPoint();
         });
     </script>
 @endsection

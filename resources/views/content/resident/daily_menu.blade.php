@@ -22,13 +22,22 @@
 
     <hr class="my-3">
 
-    @php
-      $picColors = [
-          'Bu Sri' => 'badge bg-label-info me-1',
-          'Pak Dafio' => 'badge bg-label-success me-1',
-          'Pak Sigit' => 'badge bg-label-primary me-1',
-      ];
-    @endphp
+@php
+    $getPicColorClass = function($name) {
+        $colors = [
+            'bg-label-primary',
+            'bg-label-success',
+            'bg-label-info',
+            'bg-label-warning',
+            'bg-label-danger',
+            'bg-label-secondary',
+            'bg-label-dark',
+        ];
+
+        $index = crc32($name) % count($colors);
+        return 'badge ' . $colors[$index] . ' me-1';
+    };
+@endphp
 
     @if($meals->isEmpty())
     <div class="alert alert-warning">
@@ -50,21 +59,24 @@
               <th>Meal Time</th>
               <th>Time</th>
               <th>Menu</th>
-              <th>PIC</th>
+              <th>Vendor</th>
             </tr>
           </thead>
           <tbody>
-            @foreach($meals as $meal)
-              @php
-                $colorClass = $picColors[$meal->pic->name ?? ''] ?? 'badge-secondary';
-              @endphp
-              <tr>
-                <td>{{ $meal->meal_type }}</td>
-                <td>{{ $meal->time }}</td>
-                <td>{{ $meal->menu_description }}</td>
-                <td>
-                  <span class="badge {{ $colorClass }}">{{ $meal->pic->name ?? '—' }}</span>
-                </td>
+          @foreach($meals as $meal)
+@php
+  $colorClass = isset($meal->pic->name) ? $getPicColorClass($meal->pic->name) : 'badge bg-label-secondary me-1';
+@endphp
+
+            <tr>
+ <td>{{ $meal->meal_type }}</td>
+  <td>{{ $meal->time }}</td>
+  <td>{{ $meal->menu_description }}</td>
+  <td>
+    <span class="{{ $colorClass }}">
+      {{ $meal->pic->name ?? '—' }}
+    </span>
+  </td>
               </tr>
             @endforeach
           </tbody>

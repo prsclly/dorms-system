@@ -58,54 +58,75 @@
                 <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editParentModal{{ $parent->id }}">
                   <i class="bx bx-edit-alt me-1"></i> Edit
                 </a>
-                <form action="{{ route('admin.manage.parents.destroy', $parent->id) }}" method="POST" onsubmit="return confirm('Delete this parent?');">
-                  @csrf @method('DELETE')
-                  <button class="dropdown-item text-danger">
-                    <i class="bx bx-trash me-1"></i> Delete
-                  </button>
-                </form>
+                <button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $parent->id }}">
+                  <i class="bx bx-trash me-1"></i> Delete
+                </button>
               </div>
             </div>
+<!-- Edit Modal -->
+<div class="modal fade" id="editParentModal{{ $parent->id }}" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="{{ route('admin.manage.parents.update', $parent->id) }}" class="modal-content text-start">
+      @csrf @method('PUT')
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Parent</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Name <span class="text-danger">*</span></label>
+          <input name="name" type="text" class="form-control" value="{{ $parent->name }}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email <span class="text-danger">*</span></label>
+          <input name="email" type="email" class="form-control" value="{{ $parent->email }}" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Select Children <span class="text-danger">*</span></label>
+          <input type="text" id="search-student-edit-{{ $parent->id }}" class="form-control mb-2" placeholder="Search student...">
+          <div class="form-check d-flex flex-column gap-1 student-checkbox-list-edit-{{ $parent->id }}">
+            @foreach ($allStudents as $student)
+              <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="student_ids[]" value="{{ $student->id }}"
+                  {{ in_array($student->id, $parent->students->pluck('id')->toArray()) ? 'checked' : '' }}>
+                {{ $student->name }} ({{ $student->nim }})
+              </label>
+            @endforeach
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-primary">Update</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-            <!-- Edit Modal -->
-            <div class="modal fade" id="editParentModal{{ $parent->id }}" tabindex="-1">
-              <div class="modal-dialog">
-                <form method="POST" action="{{ route('admin.manage.parents.update', $parent->id) }}" class="modal-content">
-                  @csrf @method('PUT')
-                  <div class="modal-header">
-                    <h5 class="modal-title">Edit Parent</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="mb-3">
-                      <label class="form-label">Name <span class="text-danger">*</span></label>
-                      <input name="name" type="text" class="form-control" value="{{ $parent->name }}" required>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Email <span class="text-danger">*</span></label>
-                      <input name="email" type="email" class="form-control" value="{{ $parent->email }}" required>
-                    </div>
-                    <div class="mb-3">
-                      <label class="form-label">Select Children <span class="text-danger">*</span></label>
-                      <input type="text" id="search-student-edit-{{ $parent->id }}" class="form-control mb-2" placeholder="Search student...">
-                      <div class="form-check d-flex flex-column gap-1 student-checkbox-list-edit-{{ $parent->id }}">
-                        @foreach ($allStudents as $student)
-                          <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="student_ids[]" value="{{ $student->id }}"
-                              {{ in_array($student->id, $parent->students->pluck('id')->toArray()) ? 'checked' : '' }}>
-                            {{ $student->name }} ({{ $student->nim }})
-                          </label>
-                        @endforeach
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary">Update</button>
-                  </div>
-                </form>
-              </div>
-            </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal{{ $parent->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $parent->id }}" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="{{ route('admin.manage.parents.destroy', $parent->id) }}" class="modal-content">
+      @csrf
+      @method('DELETE')
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel{{ $parent->id }}">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <strong>{{ $parent->name }}</strong>'s data?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary me-1" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+
           </td>
         </tr>
         @empty
@@ -152,7 +173,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-outline-secondary me-1" data-bs-dismiss="modal">Cancel</button>
         <button class="btn btn-primary">Add Parent</button>
       </div>
     </form>
@@ -161,27 +182,34 @@
 @endsection
 
 @section('vendor-script')
-  <script>
-    // FUNGSI FILTER SEARCH
-    function filterCheckboxList(inputId, listClass) {
-      const input = document.getElementById(inputId);
-      input.addEventListener('keyup', function () {
-        const filter = input.value.toLowerCase();
-        const checkboxes = document.querySelectorAll(.${listClass} label);
-        checkboxes.forEach(label => {
-          const text = label.textContent.toLowerCase();
-          label.style.display = text.includes(filter) ? 'block' : 'none';
-        });
+<script>
+  function filterCheckboxList(inputId, listClass) {
+    const input = document.getElementById(inputId);
+    input.addEventListener('keyup', function () {
+      const filter = input.value.toLowerCase();
+      const checkboxes = document.querySelectorAll(`.${listClass} label`);
+      checkboxes.forEach(label => {
+        const text = label.textContent.toLowerCase();
+        label.style.display = text.includes(filter) ? 'block' : 'none';
       });
-    }
-
-    // JALANKAN SAAT DOM SIAP
-    document.addEventListener('DOMContentLoaded', function () {
-      filterCheckboxList('search-student-add', 'student-checkbox-list-add');
-
-      @foreach ($parents as $parent)
-        filterCheckboxList('search-student-edit-{{ $parent->id }}', 'student-checkbox-list-edit-{{ $parent->id }}');
-      @endforeach
     });
-  </script>
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Jalankan search filter
+    filterCheckboxList('search-student-add', 'student-checkbox-list-add');
+    @foreach ($parents as $parent)
+      filterCheckboxList('search-student-edit-{{ $parent->id }}', 'student-checkbox-list-edit-{{ $parent->id }}');
+    @endforeach
+
+    // Fade out notifikasi
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      setTimeout(() => {
+        alert.classList.add('fade');
+        setTimeout(() => alert.remove(), 500);
+      }, 5000);
+    });
+  });
+</script>
 @endsection

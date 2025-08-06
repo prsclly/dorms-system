@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Manage PIC')
+@section('title', 'Manage Vendor')
 
 @section('vendor-style')
   @vite('resources/assets/vendor/libs/apex-charts/apex-charts.scss')
@@ -12,7 +12,7 @@
 
 @section('content')
 <div class="container">
-  <h4 class="mb-4 fw-bold">PIC Database - Add, Edit, or Delete PIC Records</h4>
+  <h4 class="mb-4 fw-bold">Vendor Database - Add, Edit, or Delete Vendor Records</h4>
 
   @if(session('success'))
 <div id="success-alert" class="alert alert-success alert-dismissible fade show" role="alert" style="transition: opacity 0.5s ease;">
@@ -43,7 +43,7 @@
           </select>
         </div>
         <div class="col-md-3">
-          <button type="submit" class="btn btn-primary btn-sm w-100">+ Add PIC</button>
+          <button type="submit" class="btn btn-primary btn-sm w-100">+ Add Vendor</button>
         </div>
       </div>
     </form>
@@ -107,7 +107,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                    Are you sure you want to delete PIC <strong>{{ $pic->name }}</strong>?
+                    Are you sure you want to delete Vendor <strong>{{ $pic->name }}</strong>?
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>

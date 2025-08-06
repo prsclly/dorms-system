@@ -23,46 +23,73 @@
     <small class="text-muted">Fields marked with <span class="text-danger">*</span> are required.</small>
   </div>
   <div class="card-body">
-    <form action="{{ route('parent.permissions.store') }}" method="POST" enctype="multipart/form-data">
+    <form id="leaveForm" action="{{ route('parent.permissions.store') }}" method="POST" enctype="multipart/form-data">
       @csrf
 
       <div class="mb-3">
         <label for="student_id" class="form-label">Select Child <span class="text-danger">*</span></label>
-        <select name="student_id" id="student_id" class="form-control" required>
+        <select name="student_id" id="student_id" class="form-control @error('student_id') is-invalid @enderror" required>
           <option value="">-- Select --</option>
           @foreach ($students as $student)
-            <option value="{{ $student->id }}">{{ $student->name }} ({{ $student->nim }})</option>
+            <option value="{{ $student->id }}" {{ old('student_id') == $student->id ? 'selected' : '' }}>
+              {{ $student->name }} ({{ $student->nim }})
+            </option>
           @endforeach
         </select>
+        @error('student_id')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
       </div>
 
       <div class="mb-3">
         <label for="type" class="form-label">Leave Type <span class="text-danger">*</span></label>
-        <select name="type" id="type" class="form-control" required>
-          <option value="pesiar">Day Leave</option>
-          <option value="ib">Overnight Leave (IB)</option>
+        <select name="type" id="type" class="form-control @error('type') is-invalid @enderror" required>
+          <option value="">-- Select Type --</option>
+          <option value="pesiar" {{ old('type') == 'pesiar' ? 'selected' : '' }}>Day Leave (Pesiar)</option>
+          <option value="ib" {{ old('type') == 'ib' ? 'selected' : '' }}>Overnight Leave (Izin Bermalam)</option>
         </select>
+        @error('type')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
       </div>
 
       <div class="mb-3">
         <label for="start_date" class="form-label">Departure Date <span class="text-danger">*</span></label>
-        <input type="date" name="start_date" class="form-control" required>
+        <input type="date" name="start_date" id="start_date"
+               class="form-control @error('start_date') is-invalid @enderror"
+               required min="{{ date('Y-m-d') }}" value="{{ old('start_date') }}">
+        @error('start_date')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
       </div>
 
       <div class="mb-3" id="endDateGroup">
-        <label for="end_date" class="form-label">Return Date (only for IB)</label>
-        <input type="date" name="end_date" class="form-control">
+        <label for="end_date" class="form-label">Return Date <span class="text-danger">*</span></label>
+        <input type="date" name="end_date" id="end_date"
+               class="form-control @error('end_date') is-invalid @enderror"
+               min="{{ date('Y-m-d') }}" value="{{ old('end_date') }}">
+        @error('end_date')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
       </div>
 
       <div class="mb-3">
         <label for="reason" class="form-label">Reason <span class="text-danger">*</span></label>
-        <textarea name="reason" rows="3" class="form-control" required></textarea>
+        <textarea name="reason" rows="3" class="form-control @error('reason') is-invalid @enderror" required>{{ old('reason') }}</textarea>
+        @error('reason')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
       </div>
 
       <div class="mb-3">
-        <label for="attachment" class="form-label">Supporting Document (optional)</label>
-        <input type="file" name="attachment" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+        <label for="attachment" class="form-label">Attachment (Optional)</label>
+        <input type="file" name="attachment" class="form-control @error('attachment') is-invalid @enderror">
+        @error('attachment')
+          <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
       </div>
+
+      <div class="alert alert-danger d-none" id="formError"></div>
 
       <button type="submit" class="btn btn-primary">Submit Leave Request</button>
     </form>
@@ -71,15 +98,40 @@
 
 @push('scripts')
 <script>
-  document.getElementById('type').addEventListener('change', function () {
-    const endDateGroup = document.getElementById('endDateGroup');
-    if (this.value === 'pesiar') {
-      endDateGroup.style.display = 'none';
+document.addEventListener('DOMContentLoaded', () => {
+  const typeSelect = document.getElementById('type');
+  const startDateInput = document.getElementById('start_date');
+  const endDateInput = document.getElementById('end_date');
+  const form = document.getElementById('leaveForm');
+
+  const isPastDate = (dateStr) => {
+    const input = new Date(dateStr);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return input < today;
+  };
+
+  const syncEndDate = () => {
+    if (typeSelect.value === 'pesiar') {
+      endDateInput.value = startDateInput.value;
+      endDateInput.readOnly = true;
     } else {
-      endDateGroup.style.display = 'block';
+      endDateInput.readOnly = false;
     }
+  };
+
+  typeSelect.addEventListener('change', syncEndDate);
+
+  startDateInput.addEventListener('input', () => {
+    if (typeSelect.value === 'pesiar') {
+      endDateInput.value = startDateInput.value;
+    }
+    endDateInput.min = startDateInput.value;
   });
-  document.getElementById('type').dispatchEvent(new Event('change'));
+
+  // Call once saat load
+  syncEndDate();
+});
 </script>
 @endpush
 @endsection

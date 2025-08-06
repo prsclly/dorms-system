@@ -46,8 +46,6 @@
     <table class="table text-center">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Resident ID</th>
           <th>Name</th>
           <th>NIM</th>
           <th>Email</th>
@@ -59,8 +57,6 @@
       <tbody class="table-border-bottom-0">
         @forelse ($residents as $index => $resident)
         <tr>
-          <td>{{ $index + 1 }}</td>
-          <td>{{ $resident->id }}</td>
           <td>{{ $resident->name }}</td>
           <td>{{ $resident->student->nim ?? '-' }}</td>
           <td>{{ $resident->email }}</td>
@@ -72,13 +68,17 @@
                 <i class="bx bx-dots-vertical-rounded"></i>
               </button>
               <div class="dropdown-menu">
-                <form action="{{ route('admin.manage.residents.destroy', $resident->id) }}" method="POST" onsubmit="return confirm('Delete this resident?');">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="dropdown-item text-danger">
-                    <i class="bx bx-trash me-1"></i> Delete
-                  </button>
-                </form>
+<button
+  type="button"
+  class="dropdown-item text-danger"
+  data-bs-toggle="modal"
+  data-bs-target="#deleteModal"
+  data-resident-id="{{ $resident->id }}"
+  data-resident-name="{{ $resident->name }}"
+>
+  <i class="bx bx-trash me-1"></i> Delete
+</button>
+
               </div>
             </div>
           </td>
@@ -136,10 +136,79 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-outline-secondary me-1" data-bs-dismiss="modal">Cancel</button>
         <button type="submit" class="btn btn-primary">Add Resident</button>
       </div>
     </form>
   </div>
 </div>
+
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const alerts = document.querySelectorAll('.alert');
+
+    alerts.forEach(alert => {
+      setTimeout(() => {
+        alert.classList.add('fade');
+        setTimeout(() => alert.remove(), 500); // remove element after fade out
+      }, 5000); // 5 seconds
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Auto-dismiss alerts
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      setTimeout(() => {
+        alert.classList.add('fade');
+        setTimeout(() => alert.remove(), 500);
+      }, 5000);
+    });
+
+    // Delete modal setup
+    const deleteModal = document.getElementById('deleteModal');
+    const residentNameEl = document.getElementById('residentName');
+    const deleteForm = document.getElementById('deleteResidentForm');
+
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      const residentId = button.getAttribute('data-resident-id');
+      const residentName = button.getAttribute('data-resident-name');
+
+      // Update modal content
+      residentNameEl.textContent = residentName;
+
+      // Set action URL dynamically
+      deleteForm.action = `/admin/manage/residents/${residentId}`;
+    });
+  });
+</script>
+
+@endpush
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" class="modal-content" id="deleteResidentForm">
+      @csrf
+      @method('DELETE')
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <strong id="residentName"></strong>'s data?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary me-1" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
 @endsection

@@ -41,6 +41,7 @@
                 name="email"
                 placeholder="Enter your admin email"
                 value="{{ old('email') }}"
+                autocomplete="email"
                 required
                 autofocus
               >
@@ -55,6 +56,7 @@
                   class="form-control"
                   name="password"
                   placeholder="••••••••"
+                  autocomplete="current-password"
                   required
                 />
                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
@@ -91,5 +93,4 @@
     </div>
   </div>
 </div>
-
 @endsection

@@ -4,16 +4,17 @@ namespace App\Http\Controllers\parents;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Parents;
+
 
 class DashboardParentController extends Controller
 {
     public function index()
     {
-        // Ambil parent yang sedang login
-        $parent = Auth::guard('parent')->user();
+       /** @var Parents $parent */
+$parent = Auth::guard('parent')->user(); // ini tetap
+$students = $parent->students()->with('pointLogs')->get(); // sekarang sudah akan dikenali
 
-        // Ambil semua siswa dari parent dengan histori poinnya
-        $students = $parent->students()->with('pointLogs')->get();
 
         // Kirim data ke view dashboard
         return view('content.parents.dashboard_parents', compact('parent', 'students'));
@@ -21,7 +22,9 @@ class DashboardParentController extends Controller
 
     public function pointLogs()
     {
+       /** @var Parents $parent */
     $parent = Auth::guard('parent')->user();
+
     $students = $parent->students()->with(['pointLogs' => function ($query) {
         $query->latest();
     }])->get();
