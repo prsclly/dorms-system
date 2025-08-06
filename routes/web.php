@@ -33,10 +33,10 @@ use App\Http\Controllers\pages\ManageParentController;
 use App\Http\Controllers\parents\WeeklyMenuController;
 use App\Http\Controllers\pages\ManageTechnicianController;
 use App\Http\Controllers\pages\ManageAdminController;
-use App\Http\Controllers\admin\AdminPermissionController;
 use App\Http\Controllers\admin\PermissionApprovalController;
 use App\Http\Controllers\resident\PermissionHistoryController;
-use App\Http\Controllers\parents\ParentPermissionController;
+use App\Http\Controllers\parents\PermissionController;
+use App\Http\Controllers\admin\PermissionManagementController;
 use App\Http\Controllers\technician\TechnicianDashboardController;
 
 
@@ -107,6 +107,11 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::put('admin/manage-admins/{admin}', [ManageAdminController::class, 'update'])->name('admin.manage.admins.update');
     Route::delete('admin/manage-admins/{admin}', [ManageAdminController::class, 'destroy'])->name('admin.manage.admins.destroy');
 
+    Route::get('admin/manage-technicians', [ManageTechnicianController::class, 'index'])->name('admin.manage.technicians');
+    Route::post('admin/manage-technicians', [ManageTechnicianController::class, 'store'])->name('admin.manage.technicians.store');
+    Route::put('admin/manage-technicians/{technician}', [ManageTechnicianController::class, 'update'])->name('admin.manage.technicians.update');
+    Route::delete('admin/manage-technicians/{technician}', [ManageTechnicianController::class, 'destroy'])->name('admin.manage.technicians.destroy');
+
     //feedback menu
     Route::get('admin/catering/issue_log', [feedback::class, 'index'])->name('feedback-list');
     Route::get('admin/catering/dashboard', [Dashboard_feedback::class, 'index'])->name('feedback-dashboard');
@@ -120,12 +125,6 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::post('admin/database/pic/store', [PicController::class, 'store'])->name('pic.store');
     Route::post('admin/database/pic/update/{id}', [PicController::class, 'update'])->name('pic.update');
     Route::delete('admin/database/pic/delete/{id}', [PicController::class, 'destroy'])->name('pic.destroy');
-
-     Route::get('/permissions', [PermissionApprovalController::class, 'index'])->name('admin.permissions.index');
-    Route::get('/permissions/{permission}', [PermissionApprovalController::class, 'show'])->name('admin.permissions.show');
-    Route::post('/permissions/{permission}/approve', [PermissionApprovalController::class, 'approve'])->name('admin.permissions.approve');
-    Route::post('/permissions/{permission}/reject', [PermissionApprovalController::class, 'reject'])->name('admin.permissions.reject');
-    Route::get('/permissions/{permission}/download', [PermissionApprovalController::class, 'downloadPDF'])->name('admin.permissions.download');
 
     Route::prefix('catering-daily-menu')->group(function () {
         Route::get('/{id}/edit', [CrudMenu::class, 'edit'])->name('catering-daily-menu.edit');
@@ -160,10 +159,6 @@ Route::middleware(['auth:technician'])->prefix('technician')->name('technician.'
 
     Route::get('/task-history', [TaskHistoryController::class, 'index'])->name('technician.task-history');
 
-    Route::get('/manage-technicians', [ManageTechnicianController::class, 'index'])->name('admin.manage.technicians');
-    Route::post('/manage-technicians', [ManageTechnicianController::class, 'store'])->name('admin.manage.technicians.store');
-    Route::put('/manage-technicians/{technician}', [ManageTechnicianController::class, 'update'])->name('admin.manage.technicians.update');
-    Route::delete('/manage-technicians/{technician}', [ManageTechnicianController::class, 'destroy'])->name('admin.manage.technicians.destroy');
 
 });
 
@@ -228,8 +223,33 @@ Route::middleware('auth:parent')->group(function () {
 });
 
 Route::middleware(['auth:parent'])->prefix('parent')->group(function () {
-    Route::get('/permissions/create', [ParentPermissionController::class, 'create'])->name('parent.permissions.create');
-    Route::post('/permissions', [ParentPermissionController::class, 'store'])->name('parent.permissions.store');
-    Route::get('/permissions/history', [ParentPermissionController::class, 'history'])->name('parent.permissions.history');
+    Route::get('/permissions/create', [PermissionController::class, 'create'])->name('parent.permissions.create');
+    Route::post('/permissions', [PermissionController::class, 'store'])->name('parent.permissions.store');
+    Route::get('/permissions/history', [PermissionController::class, 'history'])->name('parent.permissions.history');
+    Route::get('/permissions/{id}/edit', [PermissionController::class, 'edit'])->name('parent.permissions.edit');
+    Route::put('/permissions/{id}', [PermissionController::class, 'update'])->name('parent.permissions.update');
+    Route::delete('/permissions/{id}', [PermissionController::class, 'destroy'])->name('parent.permissions.destroy');
+});
+
+
+Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
+    // ✅ Ganti ke ManagementController
+    Route::get('/permissions', [PermissionManagementController::class, 'index'])->name('admin.permissions.index');
+
+    // ✅ Detail, Approve, Reject, Download tetap pakai ApprovalController
+    Route::get('/permissions/{permission}', [PermissionApprovalController::class, 'show'])->name('admin.permissions.show');
+    Route::post('/permissions/{permission}/process', [PermissionApprovalController::class, 'process'])->name('admin.permissions.process');
+    Route::post('/permissions/{permission}/approve', [PermissionApprovalController::class, 'approve'])->name('admin.permissions.approve');
+    Route::post('/permissions/{permission}/reject', [PermissionApprovalController::class, 'reject'])->name('admin.permissions.reject');
+    Route::get('/permissions/{permission}/download', [PermissionApprovalController::class, 'downloadPDF'])->name('admin.permissions.download');
 
 });
+
+Route::middleware(['auth:resident'])->prefix('resident')->group(function () {
+    Route::get('/leave-history', [PermissionHistoryController::class, 'index'])->name('resident.permissions.history');
+});
+
+// Edit & Delete Point Log
+Route::get('admin/student-point/{student_id}/log/{log_id}/edit', [add_log::class, 'edit'])->name('edit_log');
+Route::put('admin/student-point/{student_id}/log/{log_id}', [add_log::class, 'update'])->name('update_log');
+Route::delete('admin/student-point/{student_id}/log/{log_id}', [add_log::class, 'destroy'])->name('delete_log');

@@ -90,7 +90,7 @@
 
   <div class="signature">
     <p>Approved by,</p>
-    <p>__________</p>
+    <p></p>
   </div>
 
   <div class="footer">

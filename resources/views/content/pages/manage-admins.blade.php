@@ -3,27 +3,6 @@
 @section('title', 'Manage Admins')
 
 @section('content')
-
-{{-- Success Modal --}}
-@if (session('success'))
-  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow bg-white">
-        <div class="modal-header border-0">
-          <h5 class="modal-title fw-bold text-center w-100 text-primary" id="successModalLabel">Success</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center fw-semibold text-dark fs-6">
-          {!! session('success') !!}
-        </div>
-        <div class="modal-footer justify-content-center border-0">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-        </div>
-      </div>
-    </div>
-  </div>
-@endif
-
 @if ($errors->any())
   <div class="alert alert-danger">
     <ul class="mb-0">
@@ -33,6 +12,13 @@
     </ul>
   </div>
 @endif
+
+@if (session('success'))
+  <div class="alert alert-success">
+    {{ session('success') }}
+  </div>
+@endif
+
 
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
@@ -145,24 +131,51 @@
           <input type="email" name="email" class="form-control" required>
         </div>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-primary">Add</button>
-      </div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary me-1" data-bs-dismiss="modal">Cancel</button>
+  <button class="btn btn-primary">Add</button>
+</div>
+
     </form>
   </div>
 </div>
 
-{{-- Auto show success modal --}}
-@if (session('success'))
-  @push('scripts')
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-      successModal.show();
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteAdminModal{{ $admin->id }}" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-start">
+      <div class="modal-header">
+        <h5 class="modal-title text-danger">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete admin <strong>{{ $admin->name }}</strong>?
+      </div>
+      <div class="modal-footer">
+        <form method="POST" action="{{ route('admin.manage.admins.destroy', $admin->id) }}">
+          @csrf @method('DELETE')
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+@push('scripts')
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const alerts = document.querySelectorAll('.alert');
+
+    alerts.forEach(alert => {
+      setTimeout(() => {
+        alert.classList.add('fade');
+        setTimeout(() => alert.remove(), 500); // remove element after fade out
+      }, 5000); // 5 seconds
     });
-  </script>
-  @endpush
-@endif
+  });
+</script>
+@endpush
 
 @endsection

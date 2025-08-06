@@ -55,7 +55,7 @@
       </div>
 
       <div class="col-md-2">
-        <label for="pic_id" class="form-label">PIC</label>
+        <label for="pic_id" class="form-label">Vendor</label>
         <select name="pic_id" class="form-select form-select-sm">
           <option value="">All</option>
           @foreach ($allPics as $pic)
@@ -114,9 +114,9 @@
       <thead>
         <tr>
           <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Date</th>
-          <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Resident</th>
+          <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Student</th>
           <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Meal Time</th>
-          <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">PIC</th>
+          <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Vendor</th>
           <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Category</th>
           <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Description</th>
           <th style="position: sticky; top: 0; background-color: #fff; z-index: 2;">Submitted at</th>
@@ -144,8 +144,14 @@
             <td style="max-width: 200px; white-space: normal; word-wrap: break-word;">
               {{ $feedback->message }}
             </td>
+<td>
+  {{ \Carbon\Carbon::parse($feedback->created_at)->format('H:i') }} WIB
+  @if ($feedback->updated_at != $feedback->created_at)
+    <span class="badge bg-label-warning ms-1" style="font-size: 0.65rem;">edited</span>
+  @endif
+</td>
 
-            <td>{{ \Carbon\Carbon::parse($feedback->created_at)->format('H:i') }} WIB</td>
+
           </tr>
         @empty
           <tr>

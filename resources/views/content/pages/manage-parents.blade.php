@@ -153,7 +153,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-outline-secondary me-1" data-bs-dismiss="modal">Cancel</button>
         <button class="btn btn-primary">Add Parent</button>
       </div>
     </form>
@@ -162,27 +162,34 @@
 @endsection
 
 @section('vendor-script')
-  <script>
-    // FUNGSI FILTER SEARCH
-    function filterCheckboxList(inputId, listClass) {
-      const input = document.getElementById(inputId);
-      input.addEventListener('keyup', function () {
-        const filter = input.value.toLowerCase();
-        const checkboxes = document.querySelectorAll(.${listClass} label);
-        checkboxes.forEach(label => {
-          const text = label.textContent.toLowerCase();
-          label.style.display = text.includes(filter) ? 'block' : 'none';
-        });
+<script>
+  function filterCheckboxList(inputId, listClass) {
+    const input = document.getElementById(inputId);
+    input.addEventListener('keyup', function () {
+      const filter = input.value.toLowerCase();
+      const checkboxes = document.querySelectorAll(`.${listClass} label`);
+      checkboxes.forEach(label => {
+        const text = label.textContent.toLowerCase();
+        label.style.display = text.includes(filter) ? 'block' : 'none';
       });
-    }
-
-    // JALANKAN SAAT DOM SIAP
-    document.addEventListener('DOMContentLoaded', function () {
-      filterCheckboxList('search-student-add', 'student-checkbox-list-add');
-
-      @foreach ($parents as $parent)
-        filterCheckboxList('search-student-edit-{{ $parent->id }}', 'student-checkbox-list-edit-{{ $parent->id }}');
-      @endforeach
     });
-  </script>
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Jalankan search filter
+    filterCheckboxList('search-student-add', 'student-checkbox-list-add');
+    @foreach ($parents as $parent)
+      filterCheckboxList('search-student-edit-{{ $parent->id }}', 'student-checkbox-list-edit-{{ $parent->id }}');
+    @endforeach
+
+    // Fade out notifikasi
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+      setTimeout(() => {
+        alert.classList.add('fade');
+        setTimeout(() => alert.remove(), 500);
+      }, 5000);
+    });
+  });
+</script>
 @endsection

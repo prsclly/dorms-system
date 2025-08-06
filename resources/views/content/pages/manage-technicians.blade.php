@@ -3,35 +3,14 @@
 @section('title', 'Manage Technicians')
 
 @section('content')
-
-{{-- Success Modal --}}
-@if (session('success'))
-  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow bg-white">
-        <div class="modal-header border-0">
-          <h5 class="modal-title fw-bold text-center w-100 text-primary" id="successModalLabel">Success</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center fw-semibold text-dark fs-6">
-          {!! session('success') !!}
-        </div>
-        <div class="modal-footer justify-content-center border-0">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
-        </div>
-      </div>
-    </div>
+@if ($errors->any())
+  <div class="alert alert-danger">
+    <ul class="mb-0">@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
   </div>
 @endif
 
-@if ($errors->any())
-  <div class="alert alert-danger">
-    <ul class="mb-0">
-      @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-      @endforeach
-    </ul>
-  </div>
+@if (session('success'))
+  <div class="alert alert-success">{!! session('success') !!}</div>
 @endif
 
 <div class="card">
@@ -75,16 +54,39 @@
                 <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editTechnicianModal{{ $technician->id }}">
                   <i class="bx bx-edit-alt me-1"></i> Edit
                 </a>
-                <form action="{{ route('admin.manage.technicians.destroy', $technician->id) }}" method="POST" onsubmit="return confirm('Delete this technician?')">
-                  @csrf @method('DELETE')
-                  <button class="dropdown-item text-danger">
-                    <i class="bx bx-trash me-1"></i> Delete
-                  </button>
-                </form>
+<!-- Trigger Delete Modal -->
+<button type="button" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteTechnicianModal{{ $technician->id }}">
+  <i class="bx bx-trash me-1"></i> Delete
+</button>
+
               </div>
             </div>
 
-            <!-- Modal berada di luar tabel tapi dalam loop -->
+            <!-- Delete Modal -->
+<div class="modal fade" id="deleteTechnicianModal{{ $technician->id }}" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="{{ route('admin.manage.technicians.destroy', $technician->id) }}" class="modal-content text-start">
+      @csrf @method('DELETE')
+
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body text-start">
+        <p>Are you sure you want to delete this technician?</p>
+        <p class="mb-0 fw-semibold text-danger">{{ $technician->name }} ({{ $technician->email }})</p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary me-1" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-danger">Delete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+            <!-- Edit Modal -->
             <div class="modal fade" id="editTechnicianModal{{ $technician->id }}" tabindex="-1">
               <div class="modal-dialog">
                 <form method="POST" action="{{ route('admin.manage.technicians.update', $technician->id) }}" class="modal-content text-start">
@@ -114,7 +116,7 @@
                     </div>
                   </div>
                   <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button"  class="btn btn-outline-secondary me-1" data-bs-dismiss="modal">Cancel</button>
                     <button class="btn btn-primary">Update</button>
                   </div>
                 </form>
@@ -175,23 +177,12 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-outline-secondary me-1" data-bs-dismiss="modal">Cancel</button>
         <button type="submit" class="btn btn-primary">Add</button>
       </div>
     </form>
   </div>
 </div>
 
-{{-- Auto show success modal --}}
-@if (session('success'))
-  @push('scripts')
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-      successModal.show();
-    });
-  </script>
-  @endpush
-@endif
 
 @endsection

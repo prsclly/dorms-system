@@ -28,7 +28,7 @@ class PermissionApprovalController extends Controller
 
         $permissions = $query->latest()->get();
 
-        return view('content.admin.permissions.index', compact('permissions'));
+        return view('content.permissions.index', compact('permissions'));
     }
 
     /**
@@ -36,7 +36,23 @@ class PermissionApprovalController extends Controller
      */
     public function show(Permission $permission)
     {
-        return view('content.admin.permissions.show', compact('permission'));
+        return view('content.permissions.show', compact('permission'));
+    }
+
+    /**
+     * Mark a permission as "on_process"
+     */
+    public function process(Permission $permission)
+    {
+        if ($permission->status !== 'pending') {
+            return redirect()->back()->with('error', 'Only pending requests can be processed.');
+        }
+
+        $permission->update([
+            'status' => 'on_process',
+        ]);
+
+        return redirect()->back()->with('success', 'Leave request marked as In Process.');
     }
 
     /**
@@ -44,6 +60,10 @@ class PermissionApprovalController extends Controller
      */
     public function approve(Permission $permission)
     {
+        if ($permission->status !== 'on_process') {
+            return redirect()->back()->with('error', 'Only in-process requests can be approved.');
+        }
+
         $permission->update([
             'status' => 'approved',
             'approved_by' => Auth::id(),
@@ -58,6 +78,10 @@ class PermissionApprovalController extends Controller
      */
     public function reject(Request $request, Permission $permission)
     {
+        if ($permission->status !== 'on_process') {
+            return redirect()->back()->with('error', 'Only in-process requests can be rejected.');
+        }
+
         $request->validate([
             'rejection_reason' => 'required|string',
         ]);

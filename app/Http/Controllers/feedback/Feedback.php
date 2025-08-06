@@ -13,7 +13,7 @@ class Feedback extends Controller
 {
     public function index(Request $request)
     {
-        $query = FeedbackMenu::with(['meal.pic', 'resident']);
+        $query = FeedbackMenu::with(['meal.pic', 'resident.student']);
 
         // Filter berdasarkan tanggal
         if ($request->filled('date')) {
@@ -44,13 +44,13 @@ class Feedback extends Controller
             return $this->exportToExcel(clone $query);
         }
 
-        // Ambil data dengan pagination (10 entri per halaman)
+        // Ambil data dengan pagination
         $feedbacks = $query->orderBy('date', 'desc')
                            ->orderBy('created_at', 'desc')
                            ->paginate(10)
-                           ->withQueryString(); // supaya parameter filter tetap ada saat pindah halaman
+                           ->withQueryString();
 
-        // Ambil semua PIC untuk dropdown
+        // Ambil semua PIC
         $allPics = Pic::orderBy('name')->get();
 
         return view('content.feedback.feedback_list', compact('feedbacks', 'allPics'));
@@ -65,24 +65,28 @@ class Feedback extends Controller
 
         // Header
         $sheet->fromArray([
-            'Date', 'Resident', 'Meal Time', 'PIC', 'Category', 'Description', 'Submitted At'
+            'Date', 'student ID', 'Student Name', 'Meal Time', 'Menu Description', 'Vendor', 'Category', 'Description', 'Submitted At'
         ], null, 'A1');
 
         $row = 2;
         foreach ($feedbacks as $feedback) {
             $sheet->setCellValue('A' . $row, \Carbon\Carbon::parse($feedback->date)->format('j M Y'));
-            $sheet->setCellValue('B' . $row, $feedback->resident?->name ?? '-');
-            $sheet->setCellValue('C' . $row, $feedback->meal?->meal_type ?? '-');
-            $sheet->setCellValue('D' . $row, $feedback->meal?->pic?->name ?? '-');
-            $sheet->setCellValue('E' . $row, $feedback->category ?? '-');
-            $sheet->setCellValue('F' . $row, $feedback->message ?? '-');
-            $sheet->setCellValue('G' . $row, \Carbon\Carbon::parse($feedback->created_at)->format('H:i') . ' WIB');
+            $sheet->setCellValue('B' . $row, $feedback->resident?->student?->nim ?? '-');
+            $sheet->setCellValue('C' . $row, $feedback->resident?->name ?? '-');
+            $sheet->setCellValue('D' . $row, $feedback->meal?->meal_type ?? '-');
+            $sheet->setCellValue('E' . $row, $feedback->meal?->menu_description ?? '-');
+            $sheet->setCellValue('F' . $row, $feedback->meal?->pic?->name ?? '-');
+            $sheet->setCellValue('G' . $row, $feedback->category ?? '-');
+            $sheet->setCellValue('H' . $row, $feedback->message ?? '-');
+            $sheet->setCellValue('I' . $row, \Carbon\Carbon::parse($feedback->created_at)->format('H:i') . ' WIB');
             $row++;
         }
 
         $writer = new Xlsx($spreadsheet);
-        $fileName = 'Feedback_Report.xlsx';
-        $tempFile = tempnam(sys_get_temp_dir(), $fileName);
+
+        // Gunakan nama file dinamis berdasarkan tanggal
+        $fileName = 'Feedback_Report_' . now()->format('Ymd_His') . '.xlsx';
+        $tempFile = tempnam(sys_get_temp_dir(), 'feedback_');
         $writer->save($tempFile);
 
         return response()->download($tempFile, $fileName)->deleteFileAfterSend(true);
